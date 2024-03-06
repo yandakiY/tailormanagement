@@ -3,6 +3,7 @@
 import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { Providers } from "./providers";
 
 
 const montserrat = Montserrat({ subsets: ["latin"] , weight:["300","300"] });
@@ -23,7 +24,9 @@ export default function Layout({ children }) {
             <Link href={''}>Contacts</Link>
           </ul>
         </nav>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
