@@ -13,7 +13,7 @@ import {
   TableContainer,
 } from '@chakra-ui/react'
 
-export default function TableClient({clients}) {
+export default function TableClient({clients , title}) {
     return (
         <>
             {/* <table className="border p-6 md:text-3xl text-xl text-justify">
@@ -43,7 +43,7 @@ export default function TableClient({clients}) {
 
             <TableContainer >
                 <Table style={{border:'1px'}} bgColor={'black'} fontWeight={'bold'} textColor={'white'} colorScheme={''}>
-                    <TableCaption>List of clients</TableCaption>
+                    <TableCaption>{title}</TableCaption>
                     <Thead bgColor={'white'}>
                         <Tr>
                             <Th>ID</Th>
