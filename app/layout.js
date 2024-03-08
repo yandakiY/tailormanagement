@@ -37,12 +37,12 @@ export default function Layout({ children }) {
               fontWeight='bold'
               
             >
-              <GridItem className="border fixed top-0 left-0 h-screen w-80 m-2 overflow-y-scroll" pl='2' area={'nav'}>
+              <GridItem className="border fixed top-0 left-0 h-screen w-80 m-2 overflow-y-scroll z-10 text-black bg-white" pl='2' area={'nav'}>
                 <SideNavBar />
               </GridItem>
 
 
-              <GridItem area={'block'}>
+              <GridItem area={'block'} className="z-0">
                 {/* Main part */}
                 <GridItem grid className="border  h-screen overflow-x-hidden" pl={'2'} mb={'2'} area={'main'}>
                   {children}

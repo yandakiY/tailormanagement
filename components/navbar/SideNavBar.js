@@ -11,7 +11,7 @@ import Link from 'next/link'
 
 const SideNavBar = () => {
   return (
-    <div className='flex flex-col '>
+    <div className='flex flex-col'>
         {/* Logo */}
         <div className='font-bold text-3xl text-center mt-4 mb-8'>
             <div>
@@ -140,7 +140,7 @@ const SideNavBar = () => {
                         <Link href={'/clients/female'}>Lists of clients Female</Link>
                     </AccordionPanel>
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
-                        Orders for a client
+                        <Link href={'/clients/orders'}>Orders for a client</Link>
                     </AccordionPanel>
                     {/* <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         New measure client
