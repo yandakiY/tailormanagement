@@ -14,7 +14,10 @@ module.exports = {
       },
       fontFamily:{
         montserrat: ["var(--font-montserrat)"],
-      }
+      },
+      screens: {
+        'print': {'raw': 'print'}, // Targets the @media print query
+      },
     },
   },
   plugins: [],

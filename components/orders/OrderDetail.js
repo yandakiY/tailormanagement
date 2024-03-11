@@ -14,7 +14,7 @@ const OrderDetail = ({order}) => {
             <div className='m-2'>
                 {/* <div className='text-xl font-bold'>Status</div> */}
                 {order.status_order === "New" ? 
-                    <div title='New order, no payment made' className='border p-2 bg-emerald-800 text-white font-bold max-w-fit'>New</div> 
+                    <div title="New order, no payment made" className="border p-2 bg-emerald-800 text-white font-bold max-w-fit">New</div> 
                     : order.status_order === "Done" ? <div title='All payment made' className='border p-2 bg-slate-600 text-white font-bold max-w-fit'>Done</div> : <div className='border p-2 bg-red-800 text-white font-bold max-w-fit'>Not Done</div> }
             </div>
 
