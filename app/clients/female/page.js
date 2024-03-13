@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const page = async () => {
     
-    const api_url = await fetch("http://127.0.0.1:8181/api/tailor_management/client/sex/2", {cache:"no-store"});
+    const api_url = await fetch("http://127.0.0.1:8181/api/tailor_management/client/sex/2", {cache:"no-cache"});
     const res = await api_url.json()
 
 

@@ -11,15 +11,15 @@ export default async function ViewClient({params}) {
     // const [client, setclient] = useState(null)
     const {clientId} = params
 
-    const api_url_client = await fetch(`http://127.0.0.1:8181/api/tailor_management/client/${clientId}`, {cache:'no-store'})
+    const api_url_client = await fetch(`http://127.0.0.1:8181/api/tailor_management/client/${clientId}`, {cache:'no-cache'})
     const data_client = await api_url_client.json()
     const result_client = data_client.results
 
     let api_url_measure = null;
     if(result_client.sex.name === "Male"){
-        api_url_measure = await fetch(`http://127.0.0.1:8181/api/tailor_management/measure_men/client/${clientId}`, {cache:'no-store'})
+        api_url_measure = await fetch(`http://127.0.0.1:8181/api/tailor_management/measure_men/client/${clientId}`, {cache:'no-cache'})
     }else{
-        api_url_measure = await fetch(`http://127.0.0.1:8181/api/tailor_management/measure_women/client/${clientId}`, {cache:'no-store'})
+        api_url_measure = await fetch(`http://127.0.0.1:8181/api/tailor_management/measure_women/client/${clientId}`, {cache:'no-cache'})
     }
 
     const data_measure = await api_url_measure.json()

@@ -5,7 +5,7 @@ import React from 'react'
 
 const OrdersClientList = async () => {
 
-    const api_url = await fetch("http://127.0.0.1:8181/api/tailor_management/client", {cache:"no-store"});
+    const api_url = await fetch("http://127.0.0.1:8181/api/tailor_management/client", {cache:"no-cache"});
     const res = await api_url.json()
 
     return (

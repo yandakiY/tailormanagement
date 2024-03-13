@@ -7,10 +7,10 @@ export default async function Home() {
 
   // throw new Error("error 404")
 
-    const api_url = await fetch("http://127.0.0.1:8181/api/tailor_management/client", {cache:"no-store"});
+    const api_url = await fetch("http://127.0.0.1:8181/api/tailor_management/client", {cache:"no-cache"});
     const res = await api_url.json()
 
-    const api_url_orders = await fetch("http://127.0.0.1:8181/api/tailor_management/orders", {cache:"no-store"});
+    const api_url_orders = await fetch("http://127.0.0.1:8181/api/tailor_management/orders", {cache:"no-cache"});
     const res_orders = await api_url_orders.json()
 
     console.log("orders",res_orders)

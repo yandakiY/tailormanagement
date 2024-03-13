@@ -7,11 +7,11 @@ export default async function ViewOrders({params}){
     
     const {clientId} = params
 
-    const api_url = await fetch(`http://127.0.0.1:8181/api/tailor_management/orders/client/${clientId}`, {cache:'no-store'})
+    const api_url = await fetch(`http://127.0.0.1:8181/api/tailor_management/orders/client/${clientId}`, {cache:'no-cache'})
     const data = await api_url.json()
     const results = data.status === "Success" ? data.results : []
 
-    const api_url_client = await fetch(`http://127.0.0.1:8181/api/tailor_management/client/${clientId}`, {cache:'no-store'})
+    const api_url_client = await fetch(`http://127.0.0.1:8181/api/tailor_management/client/${clientId}`, {cache:'no-cache'})
     const data_client = await api_url_client.json()
     const client = data_client.status === "Success" ? data_client.results : {}
 

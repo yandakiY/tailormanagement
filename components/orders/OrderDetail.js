@@ -1,7 +1,11 @@
+"use client"
+
 import Link from 'next/link'
-import React from 'react'
+import React, { useRef } from 'react'
 
 const OrderDetail = ({order}) => {
+
+    const param1Ref = useRef(null);
   return (
     <div className='border p-4 mb-4'>
         {/* Steps  */}
@@ -20,7 +24,9 @@ const OrderDetail = ({order}) => {
 
             {order.status_order == "New" || order.status_order == "Not Done" ? 
                 <div className='border p-2 m-2 bg-sky-800 text-white font-bold max-w-fit'>
-                    <Link href={`/payment/making/${order.id}`}>Make payment</Link>
+                    <Link ref={param1Ref} as={`/payment/making/${order.id}`} href={`/payment/making/${order.id}`}>    
+                        Make payment 
+                    </Link>
                 </div> : ""
             }
         </div>
