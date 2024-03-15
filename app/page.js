@@ -1,7 +1,7 @@
 
 /* eslint-disable react-hooks/exhaustive-deps */
 // "use server"
-import TableOrders from "@/components/TableOrders";
+import TableOrders from "@/components/table/TableOrders";
 import Link from "next/link";
 export default async function Home() {
 

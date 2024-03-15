@@ -1,5 +1,5 @@
-import TableClient from '@/components/TableClient'
-import TableClientOrder from '@/components/TableClientOrders';
+import TableClient from '@/components/table/TableClient'
+import TableClientOrder from '@/components/table/TableClientOrders';
 import Link from 'next/link';
 import React from 'react'
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import TableClient from '@/components/TableClient';
+import TableClient from '@/components/table/TableClient';
 import Link from 'next/link';
 
 const page = async () => {
