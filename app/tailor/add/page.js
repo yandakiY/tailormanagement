@@ -21,7 +21,10 @@ export default function Page() {
     const [isOpen, setIsOpen] = useState(false)
     const [onClose, setOnClose] = useState(false)
 
-
+    const date_var = new Date()
+    const eighteenYearsAgo = new Date(date_var.getFullYear() - 18, date_var.getMonth(), date_var.getDate());
+    const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
+    console.log('my date',maxDate)
     
     const {handleSubmit , watch , register , formState: {errors} , setValue } = useForm({
         defaultValues:{
@@ -30,7 +33,6 @@ export default function Page() {
             email:"",
             sex_id:"",
             contacts:"",
-            date_birth:"",
             year_experience:""
         }
     })
@@ -83,7 +85,7 @@ export default function Page() {
             <div className='flex flex-col mt-8'>
 
                 <div className="mb-8">
-                    <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-8" href={`/clients`}>Go back</Link>
+                    <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-8" href={`/`}>Go home</Link>
                 </div>
 
                 <form className="" onSubmit={handleSubmit(onSubmit)}>
@@ -137,7 +139,7 @@ export default function Page() {
                                     <div>Contacts (Tel) : </div>
                                     <div>
                                         <InputGroup>
-                                            <Input type='tel' 
+                                            <Input type='text' 
                                                 {...register('contacts', {required:{value:true, message:"Contacts can't be empty or null"} , pattern: {value: /^\+225\s\d{2}\s\d{2}\s\d{2}\s\d{2}\s\d{2}$/ , message:"Contacts must be in the form +225 xx xx xx xx xx"} })}
                                                 placeholder='Enter your phone number' 
                                                 size={'lg'}
@@ -171,10 +173,12 @@ export default function Page() {
                                 <div className="mb-4">
                                     <div>Date of birth : </div>
                                     <div>
-                                        <Input type='date' 
+                                        <Input 
+                                            type='date' 
                                             {...register('date_birth', {required:{value:true, message:"Date of birth can't be empty or null"} })}
                                             placeholder='' 
                                             size={'lg'}
+                                            max={maxDate}
                                         />
                                     </div>
                                     <div className="text-red-700 font-bold text-xs">
@@ -186,7 +190,7 @@ export default function Page() {
                                     <div>
                                         <Input
                                             {...register('year_experience', {min:{value:1 , message:"Year experience can't be less than 1"} , required:{value:true , message:"Year experience can't be null or empty"}})}
-                                            type="number" 
+                                            type="number"
                                             name="year_experience" 
                                             id="year_experience"
                                             placeholder="Enter your year experience"

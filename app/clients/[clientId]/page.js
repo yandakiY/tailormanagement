@@ -28,21 +28,25 @@ export default async function ViewClient({params}) {
     console.log("Measure", result_measure)
 
     return (
-        <div className="flex flex-col items-center md:text-2xl text-md">
-            <Link className="border border-red-900 bg-red-900 px-4 py-1 mb-4" href={"/clients"}>Go back</Link>
-
-            <div className="underline mb-4">
-                Profile Client : {clientId}
+        <>
+            <div className="flex flex-row mx-4 my-6">
+                <Link className="border bg-black text-white rounded px-4 py-1 mb-4" href={"/clients"}>Go back</Link>
             </div>
-            <div className="border p-4 rounded flex flex-col gap-4">
+            <div className="flex flex-col items-center md:text-2xl text-md">
 
-                <ProfileClient client={result_client} />
+                <div className="underline mb-4">
+                    Profile Client : {clientId}
+                </div>
+                <div className="border p-4 rounded flex flex-col gap-4">
 
-                <div className=" p-4">
-                    {/* <h2>Measure client : </h2> */}
-                    {result_client.sex.name === "Female" ? <MeasureClientWomen measures_clients_women={result_measure} /> : <MeasureClientMen measures_clients_men={result_measure} />}
+                    <ProfileClient client={result_client} />
+
+                    <div className=" p-4">
+                        {result_client.sex.name === "Female" ? <MeasureClientWomen measures_clients_women={result_measure} /> : <MeasureClientMen measures_clients_men={result_measure} />}
+                    </div>
                 </div>
             </div>
-        </div>
+            </>
+
     );    
 }
