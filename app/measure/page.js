@@ -1,10 +1,12 @@
 "use client"
 
-import TableClient from '@/components/table/TableClient';
-import axios from 'axios';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form';
+import TableClient from "@/components/table/TableClient";
+import TableClientMeasure from "@/components/table/TableClientMeasure";
+import axios from "axios";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+
 
 const getClientList = async () => {
 
@@ -14,8 +16,8 @@ const getClientList = async () => {
     return res.status == 'Success' ? res.results : []
 }
 
-export default function ListClients(){
-
+export default function Page() {
+    
     const [clients, setClients] = useState([])
     const {register , watch} = useForm({
         defaultValues:{
@@ -31,9 +33,12 @@ export default function ListClients(){
             .catch(err => console.error(err))
     },[])
 
-    return (
 
+    return (
         <>
+            <div>
+                {/* Lists of customer with possibility of add clients and add new measure for a customer */}
+            </div>
             <div className='mx-4 my-6 flex flex-row justify-between'>
                 <div className="">
                     <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={"/"}>Go home</Link>
@@ -55,7 +60,7 @@ export default function ListClients(){
                     />
                 </div>
                 <div className='flex justify-center mt-4'>
-                    <TableClient clients={clients} searchClient={watch('searchClient')} />
+                    <TableClientMeasure clients={clients} title={''} searchClient={watch('searchClient')} />
                 </div>
             </div>
         </>

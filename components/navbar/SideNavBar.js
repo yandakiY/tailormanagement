@@ -74,7 +74,7 @@ const SideNavBar = () => {
                     </AccordionButton>
                     </h2>
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
-                        Measure for a customer
+                        <Link href={'/measure'}>Measure for a customer</Link>
                     </AccordionPanel>
                     {/* <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         New measure client
