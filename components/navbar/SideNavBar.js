@@ -91,7 +91,7 @@ const SideNavBar = () => {
                     </AccordionButton>
                     </h2>
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
-                        New order
+                        <Link href={'/orders/add'}>New order</Link>
                     </AccordionPanel>
                     {/* <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         New measure client
@@ -168,7 +168,7 @@ const SideNavBar = () => {
                     </AccordionButton>
                     </h2>
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
-                        List of orders
+                        <Link href={'/orders'}>List of orders</Link>
                     </AccordionPanel>
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         List of orders pay or not

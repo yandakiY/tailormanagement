@@ -38,11 +38,9 @@ export default async function ViewClient({params}) {
                     Profile Client : {clientId}
                 </div>
                 <div className="border p-4 rounded flex flex-col gap-4">
-
                     <ProfileClient client={result_client} />
-
                     <div className=" p-4">
-                        {result_client.sex.name === "Female" ? <MeasureClientWomen measures_clients_women={result_measure} /> : <MeasureClientMen measures_clients_men={result_measure} />}
+                        {result_client.sex.name === "Female" ? <MeasureClientWomen client_id={clientId} measures_clients_women={result_measure} /> : <MeasureClientMen clientId={clientId} measures_clients_men={result_measure} />}
                     </div>
                 </div>
             </div>

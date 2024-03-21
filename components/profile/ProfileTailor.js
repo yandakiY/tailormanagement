@@ -226,7 +226,7 @@ export default function ProfileTailor({tailor}) {
                 </div>
             </div>
 
-
+            {/* Update tailor Modal */}
             <Modal
                 isOpen={isOpen}
                 onClose={onClose}
@@ -357,7 +357,6 @@ export default function ProfileTailor({tailor}) {
                                     type='submit' 
                                     colorScheme='blue' 
                                     mr={3}
-                                    
                                 >
                                     Update
                                 </Button>

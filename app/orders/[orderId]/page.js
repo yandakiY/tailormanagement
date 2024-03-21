@@ -1,15 +1,47 @@
 /* eslint-disable @next/next/no-async-client-component */
-// "use client"
+"use client"
 
-import React from 'react'
+import OrderDetail from '@/components/orders/OrderDetail'
+import axios from 'axios'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
 
-const DetailsOrders = ({params}) => {
-    // throw new Error()
-    let {orderId} = params
-  
-    return (
-        <div>Details : {orderId} </div>
-    )
+const getOrderById = async (id) => {
+
+    const order = await axios.get(`http://localhost:8181/api/tailor_management/orders/${id}`)
+    const data = order.data
+
+    return data
 }
 
-export default DetailsOrders
+export default function DetailsOrders({params}){
+    // throw new Error()
+    let {orderId} = params
+
+    const [order , setOrder] = useState(null)
+
+
+    useEffect(() => {
+
+        getOrderById(orderId)
+            .then(res => setOrder(res))
+            .catch(err => console.error(err))
+
+    } , [])
+  
+    return (
+        <>  
+            <div className='mx-2 my-4'>
+                <div className='flex flex-row mb-2'>
+                    <div className='bg-black text-white p-2 rounded cursor-pointer'>
+                        <Link href={'/orders'}>Go back</Link>
+                    </div>
+                </div>
+
+                <div>
+                    <OrderDetail order={order?.results} />
+                </div>
+            </div>
+        </>
+    )
+}

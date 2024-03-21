@@ -53,9 +53,9 @@ export default function Page() {
                     <input 
                         className='border border-black outline-none rounded pl-4 py-2 text-black font-bold' 
                         type="search" 
-                        name="Search client" 
+                        name="Search client"
                         id="search" 
-                        placeholder='Search client by name , id or last name' 
+                        placeholder='Search client by name , id or last name'
                         {...register('searchClient')}
                     />
                 </div>

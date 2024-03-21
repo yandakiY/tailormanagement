@@ -21,13 +21,6 @@ export default function Page({params}) {
 
     const {orderId} = params
 
-    const searchParams = useSearchParams();
-    const c = searchParams.get('c');
-    const o = searchParams.get('o');
-
-    console.log('orders',o)
-    console.log('client',c)
-
 
     // const api_url = await fetch(`http://127.0.0.1:8181/api/tailor_management/orders/client/${clientId}`, {cache:'no-cache'})
     // const data = await api_url.json()
@@ -55,16 +48,13 @@ export default function Page({params}) {
         setIsOpen(false)
         setOnClose(true)
 
-        // window.location.reload(`/clients/orders`)
-
-
     }
 
     const clientId = useRef(null).current?.dataset?.paramclient;
     console.log(clientId)
 
     const onSubmit = async (data) => {
-        console.log("test");
+        console.log("test")
         setSubmitting(true)
 
         // }
@@ -96,10 +86,10 @@ export default function Page({params}) {
 
     return (
         <>
-            <div className='flex flex-col mt-8'>
+            <div className='flex flex-col mt-8 w-96'>
 
                 <div className="mb-8">
-                    <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-8" href={`/clients/orders`}>Go back</Link>
+                    <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-8" href={`/orders/${orderId}`}>Go back</Link>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)}>

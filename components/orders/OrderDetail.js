@@ -17,14 +17,14 @@ const OrderDetail = ({order}) => {
                 
             <div className='m-2'>
                 {/* <div className='text-xl font-bold'>Status</div> */}
-                {order.status_order === "New" ? 
+                {order?.status_order === "New" ? 
                     <div title="New order, no payment made" className="border p-2 bg-emerald-800 text-white font-bold max-w-fit">New</div> 
-                    : order.status_order === "Done" ? <div title='All payment made' className='border p-2 bg-slate-600 text-white font-bold max-w-fit'>Done</div> : <div className='border p-2 bg-red-800 text-white font-bold max-w-fit'>Not Done</div> }
+                    : order?.status_order === "Done" ? <div title='All payment made' className='border p-2 bg-slate-600 text-white font-bold max-w-fit'>Done</div> : <div className='border p-2 bg-red-800 text-white font-bold max-w-fit'>Not Done</div> }
             </div>
 
-            {order.status_order == "New" || order.status_order == "Not Done" ? 
+            {order?.status_order == "New" || order?.status_order == "Not Done" ? 
                 <div className='border p-2 m-2 bg-sky-800 text-white font-bold max-w-fit'>
-                    <Link ref={param1Ref} as={`/payment/making/${order.id}`} href={`/payment/making/${order.id}`}>    
+                    <Link ref={param1Ref} as={`/payment/making/${order?.id}`} href={`/payment/making/${order?.id}`}>    
                         Make payment 
                     </Link>
                 </div> : ""
@@ -39,7 +39,7 @@ const OrderDetail = ({order}) => {
                     Description :
                 </div>
                 <div className='text-base'>
-                    {order.description_order}
+                    {order?.description_order}
                 </div>
             </div>
 
@@ -49,7 +49,7 @@ const OrderDetail = ({order}) => {
                     Date :
                 </div>
                 <div>
-                    {new Date(order.date_order).toLocaleString("en-US", {
+                    {new Date(order?.date_order).toLocaleString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -69,7 +69,7 @@ const OrderDetail = ({order}) => {
                     Price :
                 </div>
                 <div className='text-base'>
-                    {order.price_order} FCFA
+                    {order?.price_order} FCFA
                 </div>
             </div>
 
@@ -79,7 +79,7 @@ const OrderDetail = ({order}) => {
                     Volume :
                 </div>
                 <div>
-                    {order.volume_order}
+                    {order?.volume_order}
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@ const OrderDetail = ({order}) => {
                     Total :
                 </div>
                 <div className='text-base'>
-                    {order.price_order * order.volume_order} FCFA
+                    {order?.price_order * order?.volume_order} FCFA
                 </div>
             </div>
         </div>
@@ -99,7 +99,7 @@ const OrderDetail = ({order}) => {
                     To pay :
                 </div>
                 <div className='text-base'>
-                    {order.to_pay} FCFA
+                    {order?.to_pay} FCFA
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@ const OrderDetail = ({order}) => {
                     Tailor :
                 </div>
                 <div className='text-base'>
-                    {order.tailor.name} {order.tailor.last_name} ({order.tailor.contacts})
+                    {order?.tailor.name} {order?.tailor.last_name} ({order?.tailor.contacts})
                 </div>
             </div>
         </div>

@@ -1,9 +1,18 @@
+import Link from 'next/link'
 import React from 'react'
 
-const MeasureClientWomen = ({measures_clients_women}) => {
+const MeasureClientWomen = ({measures_clients_women , client_id}) => {
   return (
     <div>
-        <div className='mb-3'>Measure :</div>
+        <div className='mb-3 flex flex-row justify-between items-center'>
+            <div>
+                Measure :
+            </div>
+
+            <div className='text-base text-white bg-black rounded p-2'>
+                <Link href={`/measure/add/${client_id}`}>Add measure</Link>
+            </div>
+        </div>
         {!measures_clients_women ? 
             <div>Not measure saved</div> 
                 : 

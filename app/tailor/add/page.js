@@ -1,6 +1,6 @@
 "use client"
 
-import { Input, InputGroup, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Select } from "@chakra-ui/react";
+import { Input, InputGroup, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Select, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -20,6 +20,8 @@ export default function Page() {
     const [sex , setSex] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [onClose, setOnClose] = useState(false)
+    const toast = useToast()
+
 
     const date_var = new Date()
     const eighteenYearsAgo = new Date(date_var.getFullYear() - 18, date_var.getMonth(), date_var.getDate());
@@ -69,7 +71,13 @@ export default function Page() {
         reset()
 
         console.log('adding tailor...')
-
+        return toast({
+            title: 'Tailor added.',
+            description: "",
+            status: 'success',
+            duration: 2000,
+            isClosable: true,
+        })
     }
 
 
@@ -227,7 +235,6 @@ export default function Page() {
             <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={() => closeModal()} isCentered>
                 <ModalOverlay />
                 <ModalContent>
-                {/* <ModalHeader>New customer added</ModalHeader> */}
                 <ModalCloseButton />
                     <ModalBody padding={10}>
                         <div className="flex flex-row justify-center">
