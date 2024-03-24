@@ -50,8 +50,8 @@ export default function Page({params}) {
 
     }
 
-    const clientId = useRef(null).current?.dataset?.paramclient;
-    console.log(clientId)
+    // const clientId = useRef(null).current?.dataset?.paramclient;
+    // console.log(clientId)
 
     const onSubmit = async (data) => {
         console.log("test")
@@ -95,7 +95,7 @@ export default function Page({params}) {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="border border-black p-2 rounded">
                         <h1 className="text-3xl mb-4">
-                            Payment making for order : {orderId}
+                            Payment for order : {orderId}
                         </h1>
 
                         {/* Form  */}

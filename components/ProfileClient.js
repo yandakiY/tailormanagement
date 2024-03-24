@@ -52,20 +52,22 @@ export default function ProfileClient({client}) {
     const [onCloseModal, setonCloseModal] = useState(false)
 
     const [sex , setSex] = useState([])
-    const [clientState, setClient] = useState(client)
+    // const [client, setClient] = useState(client)
+    console.log('client', client)
 
+    // configure date , should be not less than 18 years old
     const date_var = new Date()
     const eighteenYearsAgo = new Date(date_var.getFullYear() - 18, date_var.getMonth(), date_var.getDate());
     const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
 
     const {register , handleSubmit, formState:{errors}} = useForm({
         defaultValues:{
-            name:client.name,
-            last_name:client.last_name,
-            email:client.email,
-            sex_id:client.sex.id,
-            contacts:client.contacts,
-            date_birth:client.date_birth
+            name:client?.name,
+            last_name:client?.last_name,
+            email:client?.email,
+            sex_id:client?.sex.id,
+            contacts:client?.contacts,
+            date_birth:client?.date_birth
         }
     })
     
@@ -156,12 +158,12 @@ export default function ProfileClient({client}) {
     return (
         <>
             <div className="border p-4 flex flex-col text-base">
-                <div>Name : {clientState.name}</div>
-                <div> Last name : {clientState.last_name}</div>
-                <div>Contacts : {clientState.contacts} </div>
-                <div>Email : {clientState.email} </div>
-                <div>Sex : {clientState.sex ? clientState.sex.name : sex.map(sex => sex.id === clientState.sex_id && sex.name)}</div>
-                <div>Total Payment : {clientState.total_payment} FCFA</div>
+                <div>Name : {client?.name}</div>
+                <div> Last name : {client?.last_name}</div>
+                <div>Contacts : {client?.contacts} </div>
+                <div>Email : {client?.email} </div>
+                <div>Sex : {client?.sex ? client?.sex.name : sex.map(sex => sex.id === client?.sex_id && sex.name)}</div>
+                <div>Total Payment : {client?.total_payment} FCFA</div>
 
                 <div className="flex flex-row justify-between mt-4">
                     <div onClick={() => openModalUpdate()} className="border cursor-pointer px-4 py-1 rounded text-white bg-cyan-900">
@@ -320,7 +322,7 @@ export default function ProfileClient({client}) {
                         <Button onClick={() => closeModalDelete()}>
                             No
                         </Button>
-                        <Button colorScheme='red' onClick={() => onDeleteTailor(clientState.id)} ml={3}>
+                        <Button colorScheme='red' onClick={() => onDeleteTailor(client?.id)} ml={3}>
                             Yes
                         </Button>
                     </AlertDialogFooter>

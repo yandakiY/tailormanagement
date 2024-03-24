@@ -19,7 +19,7 @@ const TableOrders = ({orders ,searchOrder}) => {
     
     // let orders_format = orders.map(order => {...orders, date_order:formatDate(order.date_order)})
 
-    console.log(orders)
+    // console.log(orders)
     return (
         <>
           <div className=''>

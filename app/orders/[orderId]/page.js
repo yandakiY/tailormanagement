@@ -8,7 +8,13 @@ import React, { useEffect, useState } from 'react'
 
 const getOrderById = async (id) => {
 
-    const order = await axios.get(`http://localhost:8181/api/tailor_management/orders/${id}`)
+    const options = {
+         headers: {
+            'Cache-Control': 'no-cache',
+        }
+    }
+
+    const order = await axios.get(`http://localhost:8181/api/tailor_management/orders/${id}` , options)
     const data = order.data
 
     return data

@@ -185,7 +185,7 @@ const SideNavBar = () => {
                     </AccordionButton>
                     </h2>
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
-                        List of payments
+                        <Link href={'/payment'}>List of payments</Link>
                     </AccordionPanel>
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         List of payments for an order

@@ -7,8 +7,13 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 
 const getClientList = async () => {
+    const options = {
+        headers: {
+            'Cache-Control': 'no-cache',
+        },
+    }
 
-    const api_url = await axios.get("http://127.0.0.1:8181/api/tailor_management/client", {cache: false});
+    const api_url = await axios.get("http://127.0.0.1:8181/api/tailor_management/client", options);
     const res = await api_url.data
 
     return res.status == 'Success' ? res.results : []
@@ -23,7 +28,7 @@ export default function ListClients(){
         }
     })
 
-    console.log(watch('searchClient'))
+    // console.log(watch('searchClient'))
 
     useEffect(() => {
         getClientList()

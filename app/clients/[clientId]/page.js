@@ -1,31 +1,71 @@
 // import { useEffect } from "react"
+"use client"
 
 import MeasureClientMen from "@/components/MeasureClientMen"
 import MeasureClientWomen from "@/components/MeasureClientWomen"
 import ProfileClient from "@/components/ProfileClient"
+import axios from "axios"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
+const getClientById = async (id) => {
+    const options = {
+        headers:{
+            'Cache-Control':'no-cache' 
+        }
+    }
+    const client = await axios.get(`http://127.0.0.1:8181/api/tailor_management/client/${id}`, options)
+    const data = await client.data
 
-export default async function ViewClient({params}) {
+    return data.results
 
-    // const [client, setclient] = useState(null)
-    const {clientId} = params
+}
 
-    const api_url_client = await fetch(`http://127.0.0.1:8181/api/tailor_management/client/${clientId}`, {cache:'no-cache'})
-    const data_client = await api_url_client.json()
-    const result_client = data_client.results
-
-    let api_url_measure = null;
-    if(result_client.sex.name === "Male"){
-        api_url_measure = await fetch(`http://127.0.0.1:8181/api/tailor_management/measure_men/client/${clientId}`, {cache:'no-cache'})
-    }else{
-        api_url_measure = await fetch(`http://127.0.0.1:8181/api/tailor_management/measure_women/client/${clientId}`, {cache:'no-cache'})
+const getMeasureById = async (id) => {
+    const options = {
+        headers:{
+            'Cache-Control':'no-cache' 
+        }
     }
 
-    const data_measure = await api_url_measure.json()
-    const result_measure = data_measure.results
+    let measure = null
+    let data = null
 
-    console.log("Measure", result_measure)
+    // get client and check sex
+    const client = await axios.get(`http://127.0.0.1:8181/api/tailor_management/client/${id}`, options)
+    const data_client = await client.data.results
+
+    if (data_client.sex.name == 'Male'){
+        measure = await axios.get(`http://127.0.0.1:8181/api/tailor_management/measure_men/client/${id}` , options)
+        data = measure.data
+    }else{
+        measure = await axios.get(`http://127.0.0.1:8181/api/tailor_management/measure_women/client/${id}` , options)
+        data = measure.data
+    }
+
+    return data.results
+
+}
+
+
+export default function ViewClient({params}) {
+
+    const [client, setclient] = useState()
+    const [measure , setMeasure] = useState()
+    const {clientId} = params
+
+
+    useEffect(() => {
+
+        getClientById(clientId)
+            .then(res => setclient(res))
+            .catch(err => console.error('error on get client' , err))
+
+        getMeasureById(clientId)
+            .then(res => setMeasure(res))
+            .catch(err => console.error('error on getting measure' , err))
+
+    }, [])
 
     return (
         <>
@@ -38,9 +78,9 @@ export default async function ViewClient({params}) {
                     Profile Client : {clientId}
                 </div>
                 <div className="border p-4 rounded flex flex-col gap-4">
-                    <ProfileClient client={result_client} />
+                    <ProfileClient client={client} />
                     <div className=" p-4">
-                        {result_client.sex.name === "Female" ? <MeasureClientWomen client_id={clientId} measures_clients_women={result_measure} /> : <MeasureClientMen clientId={clientId} measures_clients_men={result_measure} />}
+                        {client?.sex.name === "Female" ? <MeasureClientWomen client_id={clientId} measures_clients_women={measure} /> : <MeasureClientMen clientId={clientId} measures_clients_men={measure} />}
                     </div>
                 </div>
             </div>
