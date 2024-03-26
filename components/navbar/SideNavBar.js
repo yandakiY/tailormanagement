@@ -14,9 +14,11 @@ const SideNavBar = () => {
     <div className='flex flex-col'>
         {/* Logo */}
         <div className='font-bold text-3xl text-center mt-4 mb-8'>
-            <div>
-                Tailor Management
-            </div>
+            <Link href={'/'}>
+                <div>
+                    Tailor Management
+                </div>
+            </Link>
         </div>
 
         {/* Menu Adding */}

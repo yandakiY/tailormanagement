@@ -157,58 +157,58 @@ export default function Page({params}) {
             <>
             {/* <Button onClick={onOpen}>Open Modal</Button> */}
 
-            <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={() => console.log("close")}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Recu Payment</ModalHeader>
-                    <ModalBody pb={6}>
-                        {/* <Lorem count={2} /> */}
+                <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={() => console.log("close")}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader>Recu Payment</ModalHeader>
+                        <ModalBody pb={6}>
+                            {/* <Lorem count={2} /> */}
 
-                        <div ref={modalRef} className="flex flex-col mt-4 font-bold">
-                            <div className="hidden text-3xl text-center mb-4 print:block ">Tailor Management : </div>
-                            <div className="text-lg justify-center font-bold mb-2">Recu payment : {response == null ? "" : response.results.id} </div>
+                            <div ref={modalRef} className="flex flex-col mt-4 font-bold">
+                                <div className="hidden text-3xl text-center mb-4 print:block ">Tailor Management : </div>
+                                <div className="text-lg justify-center font-bold mb-2">Recu payment : {response == null ? "" : response.results.id} </div>
 
-                            <div className="flex flex-col">
                                 <div className="flex flex-col">
-                                    <div className="border border-black p-2">Order : {orderId}</div>
-                                    <div className="border border-black p-2">Amount payment : {response == null ? "" : response.results.amount_payment +"FCFA"}</div>
-                                    <div className="border border-black p-2">Price payment : {response == null ? "" : response.results.price_payment+"FCFA"}</div>
-                                </div>
-                                <div className="border border-black p-2">
-                                    Restitution : {response == null ? "" : response.results.restitution_payment} FCFA
-                                </div>
-                                <div className="border border-black p-2">Status : {response == null ? "" : response.results.status}</div>
+                                    <div className="flex flex-col">
+                                        <div className="border border-black p-2">Order : {orderId}</div>
+                                        <div className="border border-black p-2">Amount payment : {response == null ? "" : response.results.amount_payment +"FCFA"}</div>
+                                        <div className="border border-black p-2">Price payment : {response == null ? "" : response.results.price_payment+"FCFA"}</div>
+                                    </div>
+                                    <div className="border border-black p-2">
+                                        Restitution : {response == null ? "" : response.results.restitution_payment} FCFA
+                                    </div>
+                                    <div className="border border-black p-2">Status : {response == null ? "" : response.results.status}</div>
 
-                                <div className="border border-black p-2">
-                                    Date : {response == null ? "" : new Date(response.results.date_payment).toLocaleString("en-US", {
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                        second: "numeric",
-                                    })}
+                                    <div className="border border-black p-2">
+                                        Date : {response == null ? "" : new Date(response.results.date_payment).toLocaleString("en-US", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                            hour: "numeric",
+                                            minute: "numeric",
+                                            second: "numeric",
+                                        })}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </ModalBody>
+                        </ModalBody>
 
-                    <ModalFooter>
-                        <ReactToPrint
-                            bodyClass="p-2 mx-8 my-32 flex flex-row justify-center"
-                            onBeforeGetContent={() => closeModal()}
-                            onAfterPrint={() => console.log("Proccess finish")}
-                            documentTitle={`payment-`+new Date().getTime()}
-                            content={() => modalRef.current}
-                            trigger={() => 
-                                (<button onClick={() => console.log("print..")} className="bg-blue-900 text-white font-bold mb-3 p-2">
-                                    Print
-                                </button>
-                            )}
-                        />
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+                        <ModalFooter>
+                            <ReactToPrint
+                                bodyClass="p-2 mx-8 my-32 flex flex-row justify-center"
+                                onBeforeGetContent={() => closeModal()}
+                                onAfterPrint={() => console.log("Proccess finish")}
+                                documentTitle={`payment-`+new Date().getTime()}
+                                content={() => modalRef.current}
+                                trigger={() => 
+                                    (<button onClick={() => console.log("print..")} className="bg-blue-900 text-white font-bold mb-3 p-2">
+                                        Print
+                                    </button>
+                                )}
+                            />
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
             </>
 
         </>

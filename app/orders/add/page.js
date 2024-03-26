@@ -1,5 +1,5 @@
 "use client"
-import { Input, Select, Textarea } from "@chakra-ui/react";
+import { Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Textarea } from "@chakra-ui/react";
 import axios from "axios";
 import { getCloneableBody } from "next/dist/server/body-streams";
 import Link from "next/link";
@@ -27,7 +27,18 @@ const getTailorsList = async () => {
 
 export default function Page() {
 
-    const [res, setRes] = useState('')
+    const modalRef = useRef();
+    const [isOpen, setIsOpen] = useState(false)
+    const [onClose, setOnClose] = useState(true)
+
+    const closeModal = async () => {
+        
+        setIsOpen(false)
+        setOnClose(true)
+
+    }
+
+    const [res, setRes] = useState(null)
     const toast = useToast()
     const recuRef = useRef();
 
@@ -57,14 +68,15 @@ export default function Page() {
 
     const onSubmit = async (data) => {
 
-
-        console.log(data)
-
         axios.post('http://localhost:8181/api/tailor_management/orders' , data)
             // .then(res => console.log(res.data.results))
             .then(res => {
                 // console.log('id ',res.data.id)
-                setRes(res.data)
+                setIsOpen(true)
+                setRes(res.data.results.id)
+                console.log('res', res.data.results.id)
+                // document.getElementById('order').innerHTML = `Recu order  + ${res.data.results.id}`
+                // console.log('results order', res.data.results)
                 // setValue('res_order_id',res.data.results.id)
             
             })
@@ -150,25 +162,7 @@ export default function Page() {
 
                                 <div className="flex flex-col mb-2 w-full">
                                     <div className="label mb-1">
-                                        <ReactToPrint
-
-                                            bodyClass="p-2 mx-8 my-32 flex flex-row justify-center"
-                                            onBeforeGetContent={() => {
-                                                console.log('changing id')
-                                                setRes(watch('res_order_id'))
-                                            }}
-
-                                            // onBeforeGetContent={() => setRes(watch('res_order_id'))}
-                                            onAfterPrint={() => {
-                                                console.log("Proccess finish")
-                                                emptyFile()
-                                            }}
-                                            documentTitle={`order-`+new Date().getTime()}
-                                            content={() => recuRef.current}
-                                            trigger={() =>(
-                                                <button type="submit" disabled={disableBtn()} className={`${disableBtn() ? 'bg-gray-500' : 'bg-black'}  text-white font-bold rounded py-2 px-4 min-w-full`}>Save</button>
-                                            )}
-                                        />
+                                        <button type="submit" disabled={disableBtn()} className={`${disableBtn() ? 'bg-gray-500' : 'bg-black'}  text-white font-bold rounded py-2 px-4 min-w-full`}>Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -178,33 +172,60 @@ export default function Page() {
             </div>
 
 
-            <div ref={recuRef} className="hidden print:block">
-                <div>
-                    <h2 className="text-2xl underline">Recu Order : {res == null ? '' : res?.results?.id} </h2>
-                </div>
-                <div className=" flex flex-col border p-2 w-96">
-                    {/* <div className="flex flex-col mb-1 border px-2">
-                        <div>Order Id : </div>
-                        <div></div>
-                    </div> */}
-                    <div className="flex flex-col mb-1 border px-2">
-                        <div>Description : </div>
-                        <div>{watch('description_order')}</div>
-                    </div>
-                    <div className="flex flex-col mb-1 border px-2">
-                        <div>Price : </div>
-                        <div>{watch('price_order')} FCFA</div>
-                    </div>
-                    <div className="flex flex-col mb-1 border px-2">
-                        <div>Volume : </div>
-                        <div>{watch('volume_order')}</div>
-                    </div>
-                    <div className="flex flex-col mb-1 border px-2">
-                        <div>Total : </div>
-                        <div>{watch('price_order') * watch('volume_order')} FCFA</div>
-                    </div>
-                </div>
-            </div>
+
+
+            <>
+                <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={() => console.log("close")}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader>Tailor Management</ModalHeader>
+                        <ModalBody pb={6}>
+                             <div ref={modalRef} className="flex flex-col mt-4 font-bold">
+                                <div>
+                                    <h2 id='order' className="text-2xl underline">Order : {res}</h2>
+                                </div>
+                                <div className=" flex flex-col border p-2 w-96">
+                                    <div className="flex flex-col mb-1 border px-2">
+                                        <div>Description : </div>
+                                        <div>{watch('description_order')}</div>
+                                    </div>
+                                    <div className="flex flex-col mb-1 border px-2">
+                                        <div>Price : </div>
+                                        <div>{watch('price_order')} FCFA</div>
+                                    </div>
+                                    <div className="flex flex-col mb-1 border px-2">
+                                        <div>Volume : </div>
+                                        <div>{watch('volume_order')}</div>
+                                    </div>
+                                    <div className="flex flex-col mb-1 border px-2">
+                                        <div>Total : </div>
+                                        <div>{watch('price_order') * watch('volume_order')} FCFA</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <ReactToPrint
+                                bodyClass="p-2 mx-8 my-32 flex flex-row justify-center"
+                                onBeforeGetContent={() => closeModal()}
+                                onAfterPrint={() => console.log("Proccess finish")}
+                                documentTitle={`order-`+new Date().getTime()}
+                                content={() => modalRef.current}
+                                trigger={() => 
+                                    (<button onClick={() => {
+                                            console.log("print..")
+                                            emptyFile()
+                                        }} 
+                                        className="bg-blue-900 text-white font-bold mb-3 p-2">
+                                        Print
+                                    </button>
+                                )}
+                            />
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
+            </>
         </>
     )
 };

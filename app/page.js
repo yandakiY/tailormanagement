@@ -170,7 +170,7 @@ export default function Home() {
   let ordersData = convertToData(regroupOrder(convertOrdersWithDate(orders))) 
   let paymentData = convertToDataPayment(regroupPayment(convertPaymentWithDate(payments)))
 
-  console.log('male/female count', dataCountClient)
+  // console.log('male/female count', dataCountClient)
   // console.log('tailor', dataCountTailor)
   // console.log('orders data' , ordersData)
   // console.log('Payment data', paymentData)
