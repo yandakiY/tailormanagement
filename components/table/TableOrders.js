@@ -22,6 +22,7 @@ const TableOrders = ({orders ,searchOrder}) => {
     // console.log(orders)
     return (
         <>
+        
           <div className=''>
             <TableContainer>
                   <Table style={{border:'1px'}} bgColor={'black'} fontWeight={'bold'} textColor={'white'} colorScheme={''}>
@@ -43,7 +44,7 @@ const TableOrders = ({orders ,searchOrder}) => {
                                   <Td>{order?.id}</Td>
                                   <Td>{order?.price_order} FCFA</Td>
                                   <Td>{order?.volume_order}</Td>
-                                  <Td fontSize={'15px'}>{new Date(order?.date_order).toLocaleDateString("fr-FR", {
+                                  <Td fontSize={'15px'}>{new Date(order?.date_order).toLocaleDateString("en-US", {
                                       year: "numeric",
                                       month: "long",
                                       day: "numeric",
@@ -52,7 +53,9 @@ const TableOrders = ({orders ,searchOrder}) => {
                                       second: "numeric",
                                   })}</Td>
                                   <Td className='text-sm'>{order?.description_order}</Td>
-                                  <Td>
+                                  <Td 
+                                    className={`text-center ${order.status_order == 'New' ? 'bg-blue-900 text-white' : order.status_order == 'Done' ? 'bg-green-900 text-white' : 'bg-red-600 text-white'}`}
+                                  >
                                     {order?.status_order == "New" ? 
                                       <div>New</div> : order?.status_order == "Done" ? <div>Done</div> : <div>Not Done</div>
                                     }
@@ -76,7 +79,10 @@ const TableOrders = ({orders ,searchOrder}) => {
                                       second: "numeric",
                                   })}</Td>
                                   <Td className='text-sm'>{order?.description_order}</Td>
-                                  <Td>
+                                  <Td 
+                                    className={`${order.status_order == 'New' ? 'bg-blue-900 text-white' : order.status_order == 'Done' ? 'bg-green-900 text-white' : 'bg-red-600 text-white'}`}
+
+                                  >
                                     {order?.status_order == "New" ? 
                                       <div>New</div> : order?.status_order == "Done" ? <div>Done</div> : <div>Not Done</div>
                                     }

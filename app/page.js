@@ -7,6 +7,9 @@ import PieClientSex from "@/components/charts/PieSex"
 import AreaChartPlot from "@/components/charts/PieSex"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { Spinner } from '@chakra-ui/react'
+import LineCharts from "@/components/charts/LineChart"
+import LineChartsPayment from "@/components/charts/LineChartPayment"
 
 
 const getClientMaleCount = async () => {
@@ -72,7 +75,7 @@ const regroupPayment = (payments) => {
 const convertToDataPayment = (paymentsObj) => {
   // to array
   const arrayData = Object.entries(paymentsObj)
-    .sort((a , b) => b[1] - a[1])
+    .sort((a , b) => b[0] - a[0])
     .slice()
     .reverse()
 
@@ -111,7 +114,7 @@ const regroupOrder = (orders) => {
 const convertToData = orders => {
   // to array
   const arrayData = Object.entries(orders)
-    .sort((a , b) => b[1] - a[1])
+    .sort((a , b) => b[0] - a[0])
     .slice()
     .reverse()
 
@@ -129,6 +132,26 @@ const convertToData = orders => {
   return dataReturn
 }
 
+const getCountAll = (listsAll) => {
+   // total client
+  let totalClient = 0
+  listsAll.every(e => e != undefined) && listsAll.map((val , i) => {
+    totalClient += val.count
+  })
+  // console.log('total client', totalClient)
+  return totalClient
+}
+
+const getCountAllPay = (listsAll) => {
+   // total client
+  let totalPay = 0
+  listsAll.every(e => e != undefined) && listsAll.map((val , i) => {
+    totalPay += val.amount
+  })
+  // console.log('total client', totalClient)
+  return totalPay
+}
+
 export default function Home() {
 
   const [countClientMale , setCountClientMale] = useState()
@@ -142,6 +165,7 @@ export default function Home() {
   const [payments , setPayments] = useState([])
 
   let dataCountClient = [countClientMale , countClientFemale] || []
+
   let dataCountTailor = [countTailorMale , countTailorFemale] || []
   let ordersData = convertToData(regroupOrder(convertOrdersWithDate(orders))) 
   let paymentData = convertToDataPayment(regroupPayment(convertPaymentWithDate(payments)))
@@ -185,8 +209,41 @@ export default function Home() {
         Welcome to Tailor Management
       </div>
 
-      <div className="border mx-2 my-2 p-2 w-full">
+      <div className="p-2 text-2xl grid grid-cols-4 gap-x-2 w-full font-bold">
+        <div className="flex flex-col items-center border p-2">
+          <div>Clients :</div>
+          <div className="text-xl mt-3">{getCountAll(dataCountClient)}</div>
+        </div>
+        <div className="flex flex-col items-center border p-2">
+          <div>Tailors :</div>
+          <div className="text-xl mt-3">{getCountAll(dataCountTailor)}</div>
+        </div>
+        <div className="flex flex-col items-center border p-2">
+          <div>Orders :</div>
+          <div className="text-xl mt-3">{getCountAll(ordersData)}</div>
+        </div>
+        <div className="flex flex-col items-center border p-2">
+          <div>All Payments :</div>
+          <div className="text-xl mt-3">{getCountAllPay(paymentData)} FCFA</div>
+        </div>
+      </div>
+
+      <div className="mx-2 my-2 p-2 w-full">
         <div className="grid grid-cols-2 gap-2 h-screen">
+          
+          <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
+            <h3 className="font-bold text-lg">
+              {/* Payment price by day */}
+              Order by day
+            </h3>
+            {ordersData && <LineCharts data={ordersData} />}
+          </div>
+          <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
+            <h3>
+              Payment price by day
+            </h3>
+            {paymentData && <LineChartsPayment data={paymentData} />}
+          </div>
           <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
             <h3 className="font-bold text-lg">Repartition client by sex</h3>
             {dataCountClient && <PieClientSex data={dataCountClient} />}
@@ -195,26 +252,8 @@ export default function Home() {
             <h3 className="font-bold text-lg">Repartition tailor by sex</h3>
             {dataCountTailor && <PieClientSex data={dataCountTailor} />}
           </div> 
-          <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
-            Payment price par jour
-          </div>
-          <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
-            Order par jour
-          </div>
         </div>
       </div>
     </main>
   );
 }
-
-// export async function getStaticProps() {
-//   const countMale = await getClientMaleCount()
-//   const countFemale = await getClientFemaleCount()
-
-//   return {
-//     props: {
-//       countMale,
-//       countFemale
-//     },
-//   };
-// }
