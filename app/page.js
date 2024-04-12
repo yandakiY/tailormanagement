@@ -13,138 +13,34 @@ import { useEffect, useState } from "react"
 import { Spinner } from '@chakra-ui/react'
 import LineCharts from "@/components/charts/LineChart"
 import LineChartsPayment from "@/components/charts/LineChartPayment"
+import { useForm } from "react-hook-form"
+import SignIn from "@/components/auth/sign-in"
+import Login from "@/components/auth/login"
+import { jwtDecode } from "jwt-decode"
+import { useRouter } from "next/navigation"
 
 
 export default function Home() {
 
+  const router = useRouter()
   const [signIn, setSignIn] = useState(false)
+  const {register , handleSubmit, formState:{errors}} = useForm()
+
+
+  useEffect(() => {
+    console.log('Auth data : ', jwtDecode(localStorage.getItem('auth_token')))
+    
+    var currentTime = new Date().getTime()/1000
+    currentTime - jwtDecode(localStorage.getItem('auth_token')).exp < 600 && router.push('/home')
+    // localStorage.getItem('auth_token') && router.push('/home')
+  },[])
+
 
   return (
     <>
-      {!signIn ? (<main className={`mx-2 my-3 flex justify-center items-center h-screen`}>
-        <div className="flex flex-col content-center bg-white w-1/4 shadow-xl rounded-md p-4">
-          <div className=" text-lg lg:text-4xl font-bold text-center mb-6">
-            Tailor Management
-          </div>
-
-          <div className=" text-lg lg:text-2xl font-bold text-center mb-6">
-            Login
-          </div>
-          <div className="p-4 flex-1 flex-col justify-center content-center items-center">
-            <form action="">
-              <div className="flex flex-col mb-4">
-                <div>Username :</div>
-                <div>
-                  <input type="text" name="username" placeholder="Username" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                </div>
-              </div>
-
-              <div className="flex flex-col mb-4">
-                <div>Password :</div>
-                <div>
-                  <input type="password" name="password" placeholder="Password" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                </div>
-              </div>
-
-              <div className="">
-                <button className="w-full bg-blue-900 hover:bg-blue-950 text-white px-2 py-3 rounded ">Connect you</button>
-              </div>
-
-            </form>
-
-            <div className="mt-6 text-center">
-              <p>Create an account <span onClick={() => setSignIn(true)} className="text-blue-900 underline hover:cursor-pointer">here</span> </p>
-            </div>
-          </div>
-        </div>
-
-        </main> )
+      {!signIn ? (<Login signIn={signIn} setSignIn={setSignIn} />)
         : 
-        (<main className={`mx-2 my-3 flex justify-center items-center h-screen`}>
-          <div className="flex flex-col content-center bg-white w-1/4 shadow-xl rounded-md p-4">
-            <div className=" text-lg lg:text-4xl font-bold text-center mb-3">
-              Tailor Management
-            </div>
-
-            <div className=" text-lg lg:text-2xl font-bold text-center mb-3">
-              Sign in
-            </div>
-            <div className="p-4 flex-1 flex-col justify-center content-center items-center">
-              <form action="">
-                <div className="flex flex-col mb-2">
-                  <div>Name :</div>
-                  <div>
-                    <input type="text" name="name" placeholder="name" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                  </div>
-                </div>
-
-                <div className="flex flex-col mb-2">
-                  <div>Last name :</div>
-                  <div>
-                    <input type="text" name="last_name" placeholder="Last name" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                  </div>
-                </div>
-
-                <div className="flex flex-col mb-2">
-                  <div>Email :</div>
-                  <div>
-                    <input type="text" name="name" placeholder="name" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                  </div>
-                </div>
-
-                <div className="flex flex-col mb-2">
-                  <div>Contacts :</div>
-                  <div>
-                    <input type="text" name="contacts" placeholder="Contacts" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                  </div>
-                </div>
-
-                <div className="flex flex-col mb-2">
-                  <div>Date birth :</div>
-                  <div>
-                    <input type="date" name="date_birth" placeholder="" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                  </div>
-                </div>
-
-                <div className="flex flex-col mb-2">
-                  <div>Sex:</div>
-                  <div>
-                    <select name="" id="">
-                      <option value="">M</option>
-                      <option value="">F</option>
-                    </select>
-                    {/* <input type="text" name="last_name" placeholder="Last name" className="w-full flex border px-4 py-2 rounded focus:outline-none" /> */}
-                  </div>
-                </div>
-
-                
-                <div className="flex flex-col mb-2">
-                  <div>Username :</div>
-                  <div>
-                    <input type="text" name="username" placeholder="Username" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                  </div>
-                </div>
-
-                <div className="flex flex-col mb-2">
-                  <div>Password :</div>
-                  <div>
-                    <input type="password" name="password" placeholder="Password" className="w-full flex border px-4 py-2 rounded focus:outline-none" />
-                  </div>
-                </div>
-
-                <div className="">
-                  <button className="w-full bg-blue-900 hover:bg-blue-950 text-white px-2 py-3 rounded ">Save</button>
-                </div>
-
-              </form>
-
-              <div className="mt-6 text-center">
-                <p>Connect you <span onClick={() => setSignIn(false)} className="text-blue-900 underline hover:cursor-pointer">here</span> </p>
-              </div>
-            </div>
-          </div>
-        </main>
-      )}
+        (<SignIn signIn={signIn} setSignIn={setSignIn} />)}
     </>
   );
 }

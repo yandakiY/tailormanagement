@@ -23,11 +23,13 @@ export default function Layout({ children }) {
   
   // console.log('token',window.localStorage.getItem('token'))
   return (
-    <html lang="en">
-      <body className={``}>
-        {children}
-      </body>
-    </html>
+    
+      <html lang="en">
+        <body className={``}>
+          <Providers>{children}</Providers>
+        </body>
+      </html>
+    
   );
 }
 

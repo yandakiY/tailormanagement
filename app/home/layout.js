@@ -1,15 +1,31 @@
+// "use client"
 import Footer from "@/components/Footer";
 import SideNavBar from "@/components/navbar/SideNavBar";
 import { Grid, GridItem } from "@chakra-ui/react";
 import { Providers } from "../providers";
+// import { useEffect, useState } from "react";
+// import { jwtDecode } from "jwt-decode";
+// import { useRouter } from "next/navigation";
 
-export const metadata = {
-    title: "Tailor Management - Home"
-}
+// export const metadata = {
+//     title: "Tailor Management - Home"
+// }
 
 export default function Layout({children}) {
 
+    // const router = useRouter()
+    // const [exp, setExp] = useState(0)
+    // useEffect(() => {
+
+        
+    //     console.log('time', new Date().getTime()/1000)
+    //     console.log('time exp to mill', jwtDecode(localStorage.getItem('auth_token')).exp)
+    //     setExp(jwtDecode(localStorage.getItem('auth_token')).exp)
+    // }, [])
+    
+
     return (
+        // new Date().getTime() / 1000 - exp < 600 ?
         <>
             <Providers>
                 <Grid
@@ -39,6 +55,6 @@ export default function Layout({children}) {
                     </GridItem>
                 </Grid>
             </Providers>
-          </>
+        </> 
     )
 }

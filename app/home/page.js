@@ -6,46 +6,72 @@ import LineChartsPayment from "@/components/charts/LineChartPayment"
 import PieClientSex from "@/components/charts/PieSex"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { jwtDecode } from "jwt-decode"
+import { useRouter } from "next/navigation"
 
 
 
 const getClientMaleCount = async () => {
-  const clientMale = await axios.get('http://localhost:8181/api/tailor_management/client/sex/1')
+  const clientMale = await axios.get('http://localhost:8181/api/tailor_management/client/sex/1', {
+    headers:{
+      'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+    }
+  })
   const data = await clientMale.data
 
   return { name:'Male' , count:data.results.length }// length of lists of client male
 }
 
 const getClientFemaleCount = async () => {
-  const clientFemale = await axios.get('http://localhost:8181/api/tailor_management/client/sex/2')
+  const clientFemale = await axios.get('http://localhost:8181/api/tailor_management/client/sex/2', {
+    headers:{
+      'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+    }
+  })
   const data = await clientFemale.data
 
   return { name:'Female' , count:data.results.length } // length of lists of client male
 }
 
 const getTailorMaleCount = async () => {
-  const tailorMale = await axios.get('http://localhost:8181/api/tailor_management/tailor/sex/1')
+  const tailorMale = await axios.get('http://localhost:8181/api/tailor_management/tailor/sex/1', {
+    headers:{
+      'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+    }
+  })
   const data = await tailorMale.data
 
   return { name:'Male' , count:data.results.length }// length of lists of client male
 }
 
 const getTailorFemaleCount = async () => {
-  const tailorFemale = await axios.get('http://localhost:8181/api/tailor_management/tailor/sex/2')
+  const tailorFemale = await axios.get('http://localhost:8181/api/tailor_management/tailor/sex/2', {
+    headers:{
+      'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+    }
+  })
   const data = await tailorFemale.data
 
   return { name:'Female' , count:data.results.length } // length of lists of client male
 }
 
 const getOrders = async () => {
-  const orders = await axios.get('http://localhost:8181/api/tailor_management/orders')
+  const orders = await axios.get('http://localhost:8181/api/tailor_management/orders', {
+    headers:{
+      'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+    }
+  })
   const data = await orders.data
 
   return data.results
 }
 
 const getPayment = async () => {
-  const payments = await axios.get('http://localhost:8181/api/tailor_management/payment')
+  const payments = await axios.get('http://localhost:8181/api/tailor_management/payment', {
+    headers:{
+      'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+    }
+  })
   const data = await payments.data
 
   return data.results
@@ -153,12 +179,14 @@ const getCountAllPay = (listsAll) => {
 
 export default function Page() {
 
+    const router = useRouter()    
     const [countClientMale , setCountClientMale] = useState()
     const [countClientFemale , setCountClientFemale] = useState()
 
     const [countTailorMale , setCountTailorMale] = useState()
     const [countTailorFemale , setCountTailorFemale] = useState()
 
+    const [errorAlert, setErrorAlert] = useState(false)
 
     const [orders , setOrders] = useState([])
     const [payments , setPayments] = useState([])
@@ -169,7 +197,8 @@ export default function Page() {
     let ordersData = convertToData(regroupOrder(convertOrdersWithDate(orders))) 
     let paymentData = convertToDataPayment(regroupPayment(convertPaymentWithDate(payments)))
 
-
+    const [currentDate, setCurrentDate] = useState(null)
+    const [expirationDate, setExpirationDate] = useState(null)
 
     useEffect(() => {
 
@@ -196,6 +225,23 @@ export default function Page() {
         // payments
         getPayment()
         .then(res => setPayments(res))
+
+        console.log('token', localStorage.getItem('auth_token'))
+
+        // let deocde = jwtDecode(localStorage.getItem('auth_token'))
+        // let expDecode = deocde.exp
+        // setCurrentDate(new Date())
+        // setExpirationDate(jwtDecode(localStorage.getItem('auth_token')).exp)
+
+        // // let expirationDate = new Date(expDecode * 1000);
+        // // let currentDate = new Date()
+        // // currentDate > expirationDate && router.push('/')
+        // // console.log(new Date().getTime())
+        // console.log('time', new Date().getTime()/1000)
+        var currentTime = new Date().getTime()/1000
+        currentTime - jwtDecode(localStorage.getItem('auth_token')).exp > 600 && router.push('/')
+        // console.log('time exp to mill', jwtDecode(localStorage.getItem('auth_token')).exp)
+        // console.log('exp date', expirationDate)
     },[])
 
     return (
