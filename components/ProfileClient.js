@@ -29,9 +29,15 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 
 
-
 const getSexList = async () => {
-    const api_url_sex = await axios.get("http://127.0.0.1:8181/api/tailor_management/sex", {cache:"no-cache"});
+    
+    let options = {
+        headers:{
+            'Cache-Control':'no-cache' ,
+            'Authorization':'Bearer '+localStorage.getItem('auth_token') 
+        }
+    }
+    const api_url_sex = await axios.get("http://127.0.0.1:8181/api/tailor_management/sex", options);
     const res_sex = await api_url_sex.data
 
     // console.log("sex",res_sex.results)
@@ -52,7 +58,7 @@ export default function ProfileClient({client}) {
     const [onCloseModal, setonCloseModal] = useState(false)
 
     const [sex , setSex] = useState([])
-    // const [client, setClient] = useState(client)
+    const [clients, setClient] = useState(null)
     console.log('client', client)
 
     // configure date , should be not less than 18 years old
@@ -60,15 +66,15 @@ export default function ProfileClient({client}) {
     const eighteenYearsAgo = new Date(date_var.getFullYear() - 18, date_var.getMonth(), date_var.getDate());
     const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
 
-    const {register , handleSubmit, formState:{errors}} = useForm({
-        defaultValues:{
+    const {register  , watch , handleSubmit, formState:{errors}} = useForm({
+        values:{
             name:client?.name,
             last_name:client?.last_name,
             email:client?.email,
-            sex_id:client?.sex.id,
+            sex_id:client?.sex?.id,
             contacts:client?.contacts,
             date_birth:client?.date_birth
-        }
+        },
     })
     
     const openModalUpdate = () =>{
@@ -96,13 +102,21 @@ export default function ProfileClient({client}) {
     }
 
     const onSubmitUpdate = async (data) => {
+
+        let options = {
+            headers:{
+                'Cache-Control':'no-cache' ,
+                'Authorization':'Bearer '+localStorage.getItem('auth_token') 
+            }
+        }
+
         console.log("new data",data)
 
         // set new data to Tailor
         setClient({...data , total_payment:client.total_payment})
 
         // update via api url 
-        await axios.put(`http://localhost:8181/api/tailor_management/client/${client.id}`, data)
+        await axios.put(`http://localhost:8181/api/tailor_management/client/${client.id}`, data , options)
             .then(res => console.log("updating made..", res.data.results))
             .catch(err => console.error(err))
             
@@ -148,6 +162,12 @@ export default function ProfileClient({client}) {
 
     useEffect(() =>{
 
+        // if(client == undefined){
+        //     router.push('/')
+        // }
+        // setClient(client)
+        // console.log('client eff', client)
+
         getSexList()
             .then(res => setSex(res))
             .catch(err => console.error(err))
@@ -159,7 +179,7 @@ export default function ProfileClient({client}) {
         <>
             <div className="border p-4 flex flex-col text-base">
                 <div>Name : {client?.name}</div>
-                <div> Last name : {client?.last_name}</div>
+                <div>Last name : {client?.last_name}</div>
                 <div>Contacts : {client?.contacts} </div>
                 <div>Email : {client?.email} </div>
                 <div>Sex : {client?.sex ? client?.sex.name : sex.map(sex => sex.id === client?.sex_id && sex.name)}</div>
@@ -194,9 +214,7 @@ export default function ProfileClient({client}) {
                                     </div>
                                     <div>
                                         <Input size={'lg'} 
-                                            type="text" 
-                                            name="name" 
-                                            id="name"
+                                            type="text"
                                             {...register('name', {required:{value:true, message:"Name can't be empty or null"} , minLength:{value:2, message:"Name can't be less than 2"}})}
                                         />
                                     </div>
@@ -211,9 +229,7 @@ export default function ProfileClient({client}) {
                                     <div>
                                         <Input 
                                             size={'lg'} 
-                                            type="text"
-                                            name="last_name" 
-                                            id="last_name"                                        
+                                            type="text"                                       
                                             {...register('last_name', {minLength:{value:2 , message:"Last name can't be less than 2"} , required:{value:true , message:"Last name can't be null or empty"}})}
                                         />
                                     </div>
@@ -228,9 +244,7 @@ export default function ProfileClient({client}) {
                                     <div>
                                         <Input 
                                             size={'lg'} 
-                                            type="text" 
-                                            name="contacts" 
-                                            id="contacts" 
+                                            type="text"
                                             {...register('contacts', {required:{value:true, message:"Contacts can't be empty or null"} , pattern: {value: /^\+225\s\d{2}\s\d{2}\s\d{2}\s\d{2}\s\d{2}$/ , message:"Contacts must be in the form +225 xx xx xx xx xx"} })}
                                         />
                                     </div>
@@ -245,8 +259,6 @@ export default function ProfileClient({client}) {
                                     <div>
                                         <Input size={'lg'}
                                             type="text" 
-                                            name="email" 
-                                            id="email"
                                             {...register('email', {required:{value:true , message:"Email can't be null or empty"}, pattern:{value: /^\S+@\S+$/i , message:"Email not correspond to : email@email.com "}})}
                                         />
                                     </div>
@@ -262,8 +274,7 @@ export default function ProfileClient({client}) {
                                         <Input
                                             size={'lg'}
                                             max={maxDate}
-                                            type="date" 
-                                            name="date_birth" id="date_birth" 
+                                            type="date"
                                             {...register('date_birth', {required:{value:true, message:"Date of birth can't be empty or null"} })}
                                         />
                                     </div>

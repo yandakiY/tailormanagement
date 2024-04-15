@@ -6,12 +6,14 @@ import MeasureClientWomen from "@/components/MeasureClientWomen"
 import ProfileClient from "@/components/ProfileClient"
 import axios from "axios"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const getClientById = async (id) => {
     const options = {
         headers:{
-            'Cache-Control':'no-cache' 
+            'Cache-Control':'no-cache',
+            'Authorization':'Bearer '+localStorage.getItem('auth_token') 
         }
     }
     const client = await axios.get(`http://127.0.0.1:8181/api/tailor_management/client/${id}`, options)
@@ -24,7 +26,8 @@ const getClientById = async (id) => {
 const getMeasureById = async (id) => {
     const options = {
         headers:{
-            'Cache-Control':'no-cache' 
+            'Cache-Control':'no-cache' ,
+            'Authorization':'Bearer '+localStorage.getItem('auth_token') 
         }
     }
 
@@ -50,6 +53,7 @@ const getMeasureById = async (id) => {
 
 export default function ViewClient({params}) {
 
+    const router = useRouter()
     const [client, setclient] = useState()
     const [measure , setMeasure] = useState()
     const {clientId} = params
@@ -59,11 +63,29 @@ export default function ViewClient({params}) {
 
         getClientById(clientId)
             .then(res => setclient(res))
-            .catch(err => console.error('error on get client' , err))
+            .catch(err => {
+                console.error('error on get client' , err)
+                
+                console.log('Auth token expire')
+                // delete localStorage
+                localStorage.removeItem('auth_token')
+                // go to auth page
+                router.push('/')
+            })
 
         getMeasureById(clientId)
             .then(res => setMeasure(res))
-            .catch(err => console.error('error on getting measure' , err))
+            .catch(err => {
+                console.error('error on getting measure' , err)
+                
+                console.log('Auth token expire')
+                // delete localStorage
+                localStorage.removeItem('auth_token')
+                // go to auth page
+                router.push('/')
+            })
+
+        router.prefetch(`measure/add/${clientId}`)
 
     }, [])
 

@@ -8,6 +8,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
 import { useRouter } from "next/navigation"
+import Dashboard from "@/components/dashboard/Dashboard"
 
 
 
@@ -213,88 +214,95 @@ export default function Page() {
         // tailor
         getTailorMaleCount()
         .then(res => setCountTailorMale(res))
+        .catch(err => {
+          setErrorAlert(true)
+          console.error('Error',err)
+        })
 
         getTailorFemaleCount()
         .then(res => setCountTailorFemale(res))
-
+        .catch(err => {
+          setErrorAlert(true)
+          console.error('Error',err)
+        })
 
         // orders
         getOrders()
         .then(res => setOrders(res))
+        .catch(err => {
+          setErrorAlert(true)
+          console.error('Error',err)
+        })
         
         // payments
         getPayment()
         .then(res => setPayments(res))
+        .catch(err => {
+          setErrorAlert(true)
+          console.error('Error',err)
+        })
+
 
         console.log('token', localStorage.getItem('auth_token'))
+        // console.log('token decode', localStorage.getItem('auth_token'))
 
-        // let deocde = jwtDecode(localStorage.getItem('auth_token'))
-        // let expDecode = deocde.exp
-        // setCurrentDate(new Date())
-        // setExpirationDate(jwtDecode(localStorage.getItem('auth_token')).exp)
 
-        // // let expirationDate = new Date(expDecode * 1000);
-        // // let currentDate = new Date()
-        // // currentDate > expirationDate && router.push('/')
-        // // console.log(new Date().getTime())
-        // console.log('time', new Date().getTime()/1000)
         var currentTime = new Date().getTime()/1000
         currentTime - jwtDecode(localStorage.getItem('auth_token')).exp > 600 && router.push('/')
-        // console.log('time exp to mill', jwtDecode(localStorage.getItem('auth_token')).exp)
-        // console.log('exp date', expirationDate)
     },[])
 
     return (
-        <main className={`flex flex-col items-center justify-between mx-2 my-3`}>
-            <div className="underline text-3xl pb-4">
-                Welcome to Tailor Management
-            </div>
+        // <main className={`flex flex-col items-center justify-between mx-2 my-3`}>
+        //     <div className="underline text-3xl pb-4">
+        //         Welcome to Tailor Management
+        //     </div>
 
-            <div className="p-2 text-2xl grid grid-cols-4 gap-x-2 w-full font-bold">
-                <div className="flex flex-col items-center border p-2">
-                <div>Clients :</div>
-                <div className="text-xl mt-3">{getCountAll(dataCountClient)}</div>
-                </div>
-                <div className="flex flex-col items-center border p-2">
-                <div>Tailors :</div>
-                <div className="text-xl mt-3">{getCountAll(dataCountTailor)}</div>
-                </div>
-                <div className="flex flex-col items-center border p-2">
-                <div>Orders :</div>
-                <div className="text-xl mt-3">{getCountAll(ordersData)}</div>
-                </div>
-                <div className="flex flex-col items-center border p-2">
-                <div>All Payments :</div>
-                <div className="text-xl mt-3">{getCountAllPay(paymentData)} FCFA</div>
-                </div>
-            </div>
+        //     <div className="p-2 text-2xl grid grid-cols-4 gap-x-2 w-full font-bold">
+        //         <div className="flex flex-col items-center border p-2">
+        //         <div>Clients :</div>
+        //         <div className="text-xl mt-3">{getCountAll(dataCountClient)}</div>
+        //         </div>
+        //         <div className="flex flex-col items-center border p-2">
+        //         <div>Tailors :</div>
+        //         <div className="text-xl mt-3">{getCountAll(dataCountTailor)}</div>
+        //         </div>
+        //         <div className="flex flex-col items-center border p-2">
+        //         <div>Orders :</div>
+        //         <div className="text-xl mt-3">{getCountAll(ordersData)}</div>
+        //         </div>
+        //         <div className="flex flex-col items-center border p-2">
+        //         <div>All Payments :</div>
+        //         <div className="text-xl mt-3">{getCountAllPay(paymentData)} FCFA</div>
+        //         </div>
+        //     </div>
 
-            <div className="mx-2 my-2 p-2 w-full">
-                <div className="grid grid-cols-2 gap-2 h-screen">
+        //     <div className="mx-2 my-2 p-2 w-full">
+        //         <div className="grid grid-cols-2 gap-2 h-screen">
                 
-                <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
-                    <h3 className="font-bold text-lg">
-                    {/* Payment price by day */}
-                    Order by day
-                    </h3>
-                    {ordersData && <LineCharts data={ordersData} />}
-                </div>
-                <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
-                    <h3>
-                    Payment price by day
-                    </h3>
-                    {paymentData && <LineChartsPayment data={paymentData} />}
-                </div>
-                <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
-                    <h3 className="font-bold text-lg">Repartition client by sex</h3>
-                    {dataCountClient && <PieClientSex data={dataCountClient} />}
-                </div>
-                <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
-                    <h3 className="font-bold text-lg">Repartition tailor by sex</h3>
-                    {dataCountTailor && <PieClientSex data={dataCountTailor} />}
-                </div> 
-                </div>
-            </div>
-        </main>
+        //         <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
+        //             <h3 className="font-bold text-lg">
+        //             {/* Payment price by day */}
+        //             Order by day
+        //             </h3>
+        //             {ordersData && <LineCharts data={ordersData} />}
+        //         </div>
+        //         <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
+        //             <h3>
+        //             Payment price by day
+        //             </h3>
+        //             {paymentData && <LineChartsPayment data={paymentData} />}
+        //         </div>
+        //         <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
+        //             <h3 className="font-bold text-lg">Repartition client by sex</h3>
+        //             {dataCountClient && <PieClientSex data={dataCountClient} />}
+        //         </div>
+        //         <div className="border text-center p-2 flex flex-col justify-evenly items-center h-[50vh]">
+        //             <h3 className="font-bold text-lg">Repartition tailor by sex</h3>
+        //             {dataCountTailor && <PieClientSex data={dataCountTailor} />}
+        //         </div> 
+        //         </div>
+        //     </div>
+        // </main>
+        <Dashboard getCountAll={getCountAll} getCountAllPay={getCountAllPay} ordersData={ordersData} paymentData={paymentData} dataCountClient={dataCountClient} dataCountTailor={dataCountTailor} />
     )
 }

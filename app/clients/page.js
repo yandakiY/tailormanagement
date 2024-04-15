@@ -3,13 +3,17 @@
 import TableClient from '@/components/table/TableClient';
 import axios from 'axios';
 import Link from 'next/link';
+import { Router } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { Spinner } from '@chakra-ui/react';
 
 const getClientList = async () => {
     const options = {
         headers: {
             'Cache-Control': 'no-cache',
+            'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
         },
     }
 
@@ -21,7 +25,9 @@ const getClientList = async () => {
 
 export default function ListClients(){
 
+    const router = useRouter()
     const [clients, setClients] = useState([])
+    const [openSpinner, setOpenSpinner] = useState(true)
     const {register , watch} = useForm({
         defaultValues:{
             searchClient:''
@@ -30,14 +36,37 @@ export default function ListClients(){
 
     // console.log(watch('searchClient'))
 
-    useEffect(() => {
+    useEffect(() => {        
+
         getClientList()
-            .then(res => setClients(res))
-            .catch(err => console.error(err))
+            .then(res => {
+                
+                setOpenSpinner(false)
+                setClients(res)
+
+            })
+            .catch(err => {
+                console.error(err)
+                
+                console.log('Auth token expire')
+                // delete localStorage
+                localStorage.removeItem('auth_token')
+                // go to auth page
+                router.push('/')
+
+            })
+
+        
+        clients.forEach(client => {
+            router.prefetch(`clients/${client.id}`)
+        })
+
     },[])
 
     return (
-
+        openSpinner ?
+        <Spinner />
+        :
         <>
             <div className='mx-4 my-6 flex flex-row justify-between'>
                 <div className="">
