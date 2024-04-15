@@ -106,7 +106,7 @@ export default function ViewClient({params}) {
                     </div>
                 </div>
             </div>
-            </>
+        </>
 
     );    
 }
