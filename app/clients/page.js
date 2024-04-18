@@ -70,7 +70,7 @@ export default function ListClients(){
         <>
             <div className='mx-4 my-6 flex flex-row justify-between'>
                 <div className="">
-                    <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={"/"}>Go home</Link>
+                    <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={"/home"}>Go home</Link>
                 </div>
 
                 <div className="">

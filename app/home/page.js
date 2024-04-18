@@ -9,6 +9,8 @@ import { useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
 import { useRouter } from "next/navigation"
 import Dashboard from "@/components/dashboard/Dashboard"
+import { Spinner } from '@chakra-ui/react';
+
 
 
 
@@ -188,6 +190,7 @@ export default function Page() {
     const [countTailorFemale , setCountTailorFemale] = useState()
 
     const [errorAlert, setErrorAlert] = useState(false)
+    const [viewSpinner , setViewSpinner] = useState(true)
 
     const [orders , setOrders] = useState([])
     const [payments , setPayments] = useState([])
@@ -205,41 +208,119 @@ export default function Page() {
 
         // client
         getClientMaleCount()
-        .then(res => setCountClientMale(res))
+        .then(res => {
+          setCountClientMale(res)
+          setViewSpinner(false)  
+        })
+        .catch(err => {
+            setViewSpinner(true)
+            console.error(err)
+            
+            console.log('Auth token expire')
+            // delete localStorage
+            localStorage.removeItem('auth_token')
+            // go to auth page
+            router.push('/')
+
+        })
 
         getClientFemaleCount()
-        .then(res => setCountClientFemale(res))
+        .then(res => {
+          setCountClientFemale(res)
+          setViewSpinner(false)  
+        })
+        .catch(err => {
+            setViewSpinner(true)
+            console.error(err)
+            
+            console.log('Auth token expire')
+            // delete localStorage
+            localStorage.removeItem('auth_token')
+            // go to auth page
+            router.push('/')
+
+        })
 
 
         // tailor
         getTailorMaleCount()
-        .then(res => setCountTailorMale(res))
+        .then(res => {
+          setCountTailorMale(res)
+          setViewSpinner(false)
+        })
         .catch(err => {
-          setErrorAlert(true)
-          console.error('Error',err)
+          
+            setErrorAlert(true)
+
+            setViewSpinner(true)
+            console.error('Error',err)
+            // console.error(err)
+            
+            console.log('Auth token expire')
+            // delete localStorage
+            localStorage.removeItem('auth_token')
+            // go to auth page
+            router.push('/')
+
         })
 
         getTailorFemaleCount()
-        .then(res => setCountTailorFemale(res))
+        .then(res => {
+          setCountTailorFemale(res)
+          setViewSpinner(false)
+        })
         .catch(err => {
-          setErrorAlert(true)
-          console.error('Error',err)
+            // console.error(err)
+            setViewSpinner(false)
+
+            setErrorAlert(true)
+            console.error('Error',err)
+            console.log('Auth token expire')
+            // delete localStorage
+            localStorage.removeItem('auth_token')
+            // go to auth page
+            router.push('/')
+
         })
 
         // orders
         getOrders()
-        .then(res => setOrders(res))
+        .then(res => {
+          setOrders(res)
+          setViewSpinner(false)
+        })
         .catch(err => {
-          setErrorAlert(true)
-          console.error('Error',err)
+
+            setViewSpinner(true)
+
+            setErrorAlert(true)
+            console.error(err)
+            
+            console.log('Auth token expire')
+            // delete localStorage
+            localStorage.removeItem('auth_token')
+            // go to auth page
+            router.push('/')
+
         })
         
         // payments
         getPayment()
-        .then(res => setPayments(res))
+        .then(res => {
+          setPayments(res)
+          setViewSpinner(false)
+        })
         .catch(err => {
-          setErrorAlert(true)
-          console.error('Error',err)
+            setViewSpinner(true)
+            setErrorAlert(true)
+            console.error(err)
+            
+            console.log('Auth token expire')
+            // delete localStorage
+            localStorage.removeItem('auth_token')
+            // go to auth page
+            router.push('/')
+
         })
 
 
@@ -247,8 +328,8 @@ export default function Page() {
         // console.log('token decode', localStorage.getItem('auth_token'))
 
 
-        var currentTime = new Date().getTime()/1000
-        currentTime - jwtDecode(localStorage.getItem('auth_token')).exp > 600 && router.push('/')
+        // let currentTime = new Date().getTime()/1000
+        // currentTime - jwtDecode(localStorage.getItem('auth_token')).exp > 600 && router.push('/')
     },[])
 
     return (
@@ -303,6 +384,6 @@ export default function Page() {
         //         </div>
         //     </div>
         // </main>
-        <Dashboard getCountAll={getCountAll} getCountAllPay={getCountAllPay} ordersData={ordersData} paymentData={paymentData} dataCountClient={dataCountClient} dataCountTailor={dataCountTailor} />
+        viewSpinner ? <Spinner /> : <Dashboard getCountAll={getCountAll} getCountAllPay={getCountAllPay} ordersData={ordersData} paymentData={paymentData} dataCountClient={dataCountClient} dataCountTailor={dataCountTailor} />
     )
 }

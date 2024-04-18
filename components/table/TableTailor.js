@@ -13,7 +13,7 @@ import {
   TableContainer,
 } from '@chakra-ui/react'
 
-export default function TableTailor({lists , title}) {
+export default function TableTailor({lists , title , searchTailor}) {
     return (
         <>
 
@@ -31,18 +31,31 @@ export default function TableTailor({lists , title}) {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {lists.map((tailor) => 
-                            <Tr key={tailor.id}>
-                                <Td>{tailor.id}</Td>
-                                <Td>{tailor.name} {tailor.last_name}</Td>
-                                <Td>{tailor.contacts}</Td>
-                                <Td>{tailor.sex.name}</Td>
-                                <Td>{tailor.year_experience}</Td>
-                                <Td>
-                                    <Link href={`tailor/${tailor.id}`} >View details</Link>
-                                </Td>
-                            </Tr>
-                        )}
+                        {searchTailor == '' ? lists.map((tailor) => 
+                                <Tr key={tailor.id}>
+                                    <Td>{tailor.id}</Td>
+                                    <Td>{tailor.name} {tailor.last_name}</Td>
+                                    <Td>{tailor.contacts}</Td>
+                                    <Td>{tailor.sex.name}</Td>
+                                    <Td>{tailor.year_experience}</Td>
+                                    <Td>
+                                        <Link href={`tailor/${tailor.id}`} >View details</Link>
+                                    </Td>
+                                </Tr>
+                            ) : lists.map((tailor) =>  (tailor.name.toLowerCase().includes(searchTailor.toLowerCase()) || tailor.last_name.toLowerCase().includes(searchTailor.toLowerCase()) || (tailor.id == searchTailor)) &&
+                                <Tr key={tailor.id}>
+                                    <Td>{tailor.id}</Td>
+                                    <Td>{tailor.name} {tailor.last_name}</Td>
+                                    <Td>{tailor.contacts}</Td>
+                                    <Td>{tailor.sex.name}</Td>
+                                    <Td>{tailor.year_experience}</Td>
+                                    <Td>
+                                        <Link href={`tailor/${tailor.id}`} >View details</Link>
+                                    </Td>
+                                </Tr>
+                            )
+                        
+                        }
                     </Tbody>
                     <Tfoot bgColor={'white'}>
                         <Tr>

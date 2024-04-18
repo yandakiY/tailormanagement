@@ -5,15 +5,19 @@ import axios from "axios"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { Spinner } from '@chakra-ui/react';
+import { useRouter } from "next/navigation"
 
 
 
 const getPaymentList = async () => {
   const options = {
     headers: {
-      'Cache-Control':'no-cache'
+      'Cache-Control':'no-cache',
+      'Authorization':'Bearer '+ localStorage.getItem('auth_token')
     }
   }
+
   const payment = await axios.get('http://localhost:8181/api/tailor_management/payment' , options)
   const data = payment.data
 
@@ -22,7 +26,9 @@ const getPaymentList = async () => {
 
 export default function Page(){
 
+  const router = useRouter()
   const [payments , setPayments] = useState([])
+  const [viewSpinner, setViewSpinner] = useState(true)
 
   const {register , watch} = useForm({
     defaultValues:{
@@ -31,17 +37,33 @@ export default function Page(){
   })
 
   useEffect(() => {
+    
     getPaymentList()
-      .then(res => setPayments(res))
-      .catch(err => console.error('Error on getting' , err))
+      .then(res => {
+        setPayments(res)
+
+        setViewSpinner(false)
+      })
+      .catch(err => {
+
+        console.error('Error on getting' , err)
+        setViewSpinner(true)
+
+        if(err.response.status == 401){
+
+          localStorage.removeItem('auth_token')
+          router.push('/')
+          
+        }
+      })
 
   },[])
 
   return (
-    <>
+    viewSpinner ? <Spinner/> : <>
       
       <div className="mx-2 my-4">
-          <Link className="bg-black text-white p-2" href={'/'}>Go home</Link>
+          <Link className="bg-black text-white p-2" href={''} onClick={() => router.back()}>Go back</Link>
       </div>
       <div className="flex flex-col items-center mb-4">
         <div> 

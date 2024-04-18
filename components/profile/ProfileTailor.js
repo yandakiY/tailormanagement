@@ -30,7 +30,15 @@ import { useRouter } from 'next/navigation';
 
 
 const getSexList = async () => {
-    const api_url_sex = await axios.get("http://127.0.0.1:8181/api/tailor_management/sex", {cache:"no-cache"});
+    
+    const options = {
+        headers:{
+            'Cache-Control':'no-cache',
+            'Authorization':'Bearer ' + localStorage.getItem('auth_token')
+        }
+    }
+
+    const api_url_sex = await axios.get("http://127.0.0.1:8181/api/tailor_management/sex/lists", options);
     const res_sex = await api_url_sex.data
 
     // console.log("sex",res_sex.results)
@@ -98,15 +106,34 @@ export default function ProfileTailor({tailor}) {
     }
 
     const onSubmitUpdate = async (data) => {
+        const options = {
+            headers:{
+                'Cache-Control':'no-cache',
+                'Authorization':'Bearer ' + localStorage.getItem('auth_token')
+            }
+        }
         console.log("new data",data)
 
         // set new data to Tailor
         setTailor(data)
 
         // update via api url 
-        await axios.put(`http://localhost:8181/api/tailor_management/tailor/${tailor.id}`, data)
+        await axios.put(`http://localhost:8181/api/tailor_management/tailor/${tailor.id}`, data , options)
             .then(res => console.log("updating made..", res.data.results))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                
+
+                if(err.response.status == 401){
+
+                    // remove storage token
+                    localStorage.removeItem('auth_token')
+
+                    // push to auth page
+                    router.push('/')
+
+                }
+            })
             
         closeModal()
 
@@ -121,15 +148,33 @@ export default function ProfileTailor({tailor}) {
     }
 
     const onDeleteTailor = async (id) => {
+        const options = {
+            headers:{
+                'Cache-Control':'no-cache',
+                'Authorization':'Bearer '+ localStorage.getItem('auth_token')
+            }
+        }
         console.log("delete tailor",id)
 
         // set new data to Tailor
         // setTailor(data)
 
         // update via api url 
-        await axios.delete(`http://localhost:8181/api/tailor_management/tailor/${id}`)
+        await axios.delete(`http://localhost:8181/api/tailor_management/tailor/${id}` , options)
             .then(res => console.log("deleting...", res))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                
+                if(err.response.status == 401){
+
+                    // remove storage token
+                    localStorage.removeItem('auth_token')
+
+                    // push to auth page
+                    router.push('/')
+
+                }    
+            })
             
         closeModalDelete()
 
@@ -150,7 +195,18 @@ export default function ProfileTailor({tailor}) {
 
         getSexList()
             .then(res => setSex(res))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                
+                if(err.response.status == 401){
+                    
+                    // remove storage token
+                    localStorage.removeItem('auth_token')
+
+                    // push to auth page
+                    router.push('/')
+                }
+            })
 
         console.log("list sex",sex)
     },[])

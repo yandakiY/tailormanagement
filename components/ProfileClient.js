@@ -18,9 +18,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
   Button,
   Select,
 } from '@chakra-ui/react'
@@ -122,6 +119,9 @@ export default function ProfileClient({client}) {
             
         closeModal()
 
+        // refresh page
+        window.location.reload()
+
         return toast({
             title: 'Client updated.',
             description: "",
@@ -129,6 +129,9 @@ export default function ProfileClient({client}) {
             duration: 3000,
             isClosable: true,
         })
+
+
+        
         
     }
 

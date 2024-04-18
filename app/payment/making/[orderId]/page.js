@@ -14,12 +14,13 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/react'
 import ReactToPrint from "react-to-print";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 export default function Page({params}) {
 
     const {orderId} = params
+    const router = useRouter()
 
 
     // const api_url = await fetch(`http://127.0.0.1:8181/api/tailor_management/orders/client/${clientId}`, {cache:'no-cache'})
@@ -89,7 +90,7 @@ export default function Page({params}) {
             <div className='flex flex-col mt-8 w-96'>
 
                 <div className="mb-8">
-                    <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-8" href={`/orders/${orderId}`}>Go back</Link>
+                    <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-8" href={''} onClick={() => router.back()}>Go back</Link>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)}>

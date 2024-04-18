@@ -15,11 +15,20 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react'
+import { useRouter } from "next/navigation";
 
 
 
 const getSexApi = async () =>{
-    const api_url_sex = await axios.get("http://127.0.0.1:8181/api/tailor_management/sex", {cache:"no-cache"});
+
+    const options = {
+        headers:{
+            'Cache-Control':'no-cache',
+            'Authorization':'Bearer ' + localStorage.getItem('auth_token')
+        }
+    }
+
+    const api_url_sex = await axios.get("http://127.0.0.1:8181/api/tailor_management/sex/lists", options);
     const res_sex = await api_url_sex.data
 
     console.log("sex",res_sex.results)
@@ -36,6 +45,8 @@ export default function Page() {
     const [isOpen, setIsOpen] = useState(false)
     const [onClose, setOnClose] = useState(false)
 
+    const router = useRouter()
+
 
     const {handleSubmit , watch , register , formState: {errors} , setValue } = useForm({
         defaultValues:{
@@ -44,7 +55,7 @@ export default function Page() {
             email:"",
             sex_id:"",
             contacts:"",
-            date_birth:"",
+            date_birth:""
 
         }
     })
@@ -71,11 +82,27 @@ export default function Page() {
     }
     const onSubmit = async data =>{
 
+        const options = {
+            headers:{
+                'Cache-Control':'no-cache',
+                'Authorization':'Bearer ' + localStorage.getItem('auth_token')
+            }
+        }
+
         console.log(data)
 
-        await axios.post("http://localhost:8181/api/tailor_management/client", data)
+        await axios.post("http://localhost:8181/api/tailor_management/client", data , options)
             .then(res => console.log("New customer added", res.data.results))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+
+                // remove token expire
+                localStorage.removeItem('auth_token')
+
+                // go to auth page
+                router.push('/')
+
+            })
 
         openModal()
         reset()
@@ -87,7 +114,15 @@ export default function Page() {
     useEffect(() =>{
         getSexApi()
             .then(data => setSex(data))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+
+                // remove token
+                localStorage.removeItem('auth_token')
+
+                // push to auth page
+                router.push('/')
+            })
     },[])
 
     return (
@@ -95,7 +130,7 @@ export default function Page() {
             <div className='flex flex-col mt-8'>
 
                 <div className="mb-8">
-                    <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-8" href={`/clients`}>Go back</Link>
+                    <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-8" href={''} onClick={() => router.back()}>Go back</Link>
                 </div>
 
                 <form className="" onSubmit={handleSubmit(onSubmit)}>

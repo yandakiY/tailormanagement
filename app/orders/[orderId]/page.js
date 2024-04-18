@@ -4,6 +4,7 @@
 import OrderDetail from '@/components/orders/OrderDetail'
 import axios from 'axios'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 const getOrderById = async (id) => {
@@ -11,6 +12,7 @@ const getOrderById = async (id) => {
     const options = {
          headers: {
             'Cache-Control': 'no-cache',
+            'Authorization':'Bearer '+localStorage.getItem('auth_token')
         }
     }
 
@@ -25,13 +27,27 @@ export default function DetailsOrders({params}){
     let {orderId} = params
 
     const [order , setOrder] = useState(null)
-
+    const [viewSpinner, setViewSpinner] = useState(true)
+    const router = useRouter()
 
     useEffect(() => {
 
         getOrderById(orderId)
-            .then(res => setOrder(res))
-            .catch(err => console.error(err))
+            .then(res => {
+                
+                setOrder(res)
+                setViewSpinner(false)
+            })
+            .catch(err => {
+                console.error(err)
+
+                if(err.response.status == 401){
+
+                    localStorage.removeItem('auth_token')
+
+                    router.push('/')
+                }    
+            })
 
     } , [])
   

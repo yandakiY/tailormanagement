@@ -36,7 +36,7 @@ export default function TableClient({clients , title , searchClient}) {
                                 <Td>{client.contacts}</Td>
                                 <Td>{client.sex.name}</Td>
                                 <Td>
-                                    <Link href={`clients/${client.id}`} >View details</Link>
+                                    <Link href={`/clients/${client.id}`} >View details</Link>
                                 </Td>
                             </Tr>
                         ) 
@@ -48,7 +48,7 @@ export default function TableClient({clients , title , searchClient}) {
                                     <Td>{client.contacts}</Td>
                                     <Td>{client.sex.name}</Td>
                                     <Td>
-                                        <Link href={`clients/${client.id}`} >View details</Link>
+                                        <Link href={`/clients/${client.id}`} >View details</Link>
                                     </Td>
                                 </Tr>
                             ) 

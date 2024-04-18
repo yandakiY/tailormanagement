@@ -37,9 +37,9 @@ const SideNavBar = () => {
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         <Link href={'/clients/add'}>New client</Link>
                     </AccordionPanel>
-                    <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
+                    {/* <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         <Link href={'/clients/update'}>Update client</Link>
-                    </AccordionPanel>
+                    </AccordionPanel> */}
                 </AccordionItem>
 
                 <AccordionItem>

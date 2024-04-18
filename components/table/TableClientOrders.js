@@ -13,7 +13,7 @@ import {
   TableContainer,
 } from '@chakra-ui/react'
 
-export default function TableClientOrder({clients , title}) {
+export default function TableClientOrder({clients , title ,searchClient}) {
     return (
         <>
             <TableContainer >
@@ -29,17 +29,29 @@ export default function TableClientOrder({clients , title}) {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {clients.map((client) => 
-                            <Tr key={client.id}>
-                                <Td>{client.id}</Td>
-                                <Td>{client.name} {client.last_name}</Td>
-                                <Td>{client.contacts}</Td>
-                                <Td>{client.sex.name}</Td>
-                                <Td>
-                                    <Link href={`orders/client/${client.id}`} >View Order</Link>
-                                </Td>
-                            </Tr>
-                        )}
+                        {searchClient == '' ? (clients.map((client) => 
+                                <Tr key={client.id}>
+                                    <Td>{client.id}</Td>
+                                    <Td>{client.name} {client.last_name}</Td>
+                                    <Td>{client.contacts}</Td>
+                                    <Td>{client.sex.name}</Td>
+                                    <Td>
+                                        <Link href={`orders/client/${client.id}`} >View Order</Link>
+                                    </Td>
+                                </Tr>
+                            )) : (clients.map((client) => (client.name.toLowerCase().includes(searchClient.toLowerCase()) || client.last_name.toLowerCase().includes(searchClient.toLowerCase()) || (client.id == searchClient)) &&
+                                <Tr key={client.id}>
+                                    <Td>{client.id}</Td>
+                                    <Td>{client.name} {client.last_name}</Td>
+                                    <Td>{client.contacts}</Td>
+                                    <Td>{client.sex.name}</Td>
+                                    <Td>
+                                        <Link href={`orders/client/${client.id}`} >View Order</Link>
+                                    </Td>
+                                </Tr>
+                            ))
+                        
+                        }
                     </Tbody>
                     <Tfoot bgColor={'white'}>
                         <Tr>
