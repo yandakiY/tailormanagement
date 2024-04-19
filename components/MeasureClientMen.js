@@ -1,8 +1,13 @@
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const MeasureClientMen = ({measures_clients_men , clientId}) => {
-    console.log(measures_clients_men)
+    // console.log(measures_clients_men)
+    const [role, setRole] = useState('')
+
+    useEffect(() => {
+        setRole(localStorage.getItem('role_user'))
+    },[])
   return (
     <div>
         <div className='mb-3 flex flex-row justify-between items-center'>
@@ -10,9 +15,9 @@ const MeasureClientMen = ({measures_clients_men , clientId}) => {
                 Measure :
             </div>
 
-            <div className='text-base text-white bg-black rounded p-2'>
+            {role == 'ROLE_USER' && <div className='text-base text-white bg-black rounded p-2'>
                 <Link href={`/measure/add/${clientId}`}>Add measure</Link>
-            </div>
+            </div>}
         </div>
         {!measures_clients_men ? 
             <div>Not measure saved</div> 

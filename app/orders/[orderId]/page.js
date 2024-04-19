@@ -32,6 +32,7 @@ export default function DetailsOrders({params}){
 
     useEffect(() => {
 
+
         getOrderById(orderId)
             .then(res => {
                 

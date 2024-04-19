@@ -30,6 +30,7 @@ export default function Page() {
     const [tailors, setTailors] = useState([])
     const router = useRouter()
     const [viewSpinner, setViewSpinner] = useState(true)
+    const [role, setRole] = useState('')
 
     const {register, watch} = useForm({
         defaultValues:{
@@ -39,6 +40,8 @@ export default function Page() {
     
 
     useEffect(() =>{
+
+        setRole(localStorage.getItem('role_user'))
 
         getTailorFromApi()
             .then(res => {
@@ -71,9 +74,9 @@ export default function Page() {
                 <div className="">
                     <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={""} onClick={() => router.back()}>Go back</Link>
                 </div>
-                <div className="">
+                {role == 'ROLE_USER' && <div className="">
                     <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={"/tailor/add"}>Add new tailor</Link>
-                </div>
+                </div>}
             </div>
             <div className='flex flex-col items-center mt-8'>    
                 <div className='mt-4'>

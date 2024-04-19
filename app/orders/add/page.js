@@ -1,8 +1,8 @@
 "use client"
 import { Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Textarea } from "@chakra-ui/react";
 import axios from "axios";
-import { getCloneableBody } from "next/dist/server/body-streams";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactToPrint from "react-to-print";
@@ -11,7 +11,13 @@ import { useToast } from '@chakra-ui/react'
 
 
 const getClientsList = async () => {
-    const clients = await axios.get('http://localhost:8181/api/tailor_management/client')
+    const options = {
+        headers:{
+            'Authorization' : 'Bearer '+ localStorage.getItem('auth_token'),
+            'Cache-Control':'no-cache'
+        }
+    }
+    const clients = await axios.get('http://localhost:8181/api/tailor_management/client' , options)
     const data = await clients.data
 
     return data.results
@@ -19,7 +25,15 @@ const getClientsList = async () => {
 
 
 const getTailorsList = async () => {
-    const tailors = await axios.get('http://localhost:8181/api/tailor_management/tailor')
+
+    const options = {
+        headers:{
+            'Authorization' : 'Bearer '+ localStorage.getItem('auth_token'),
+            'Cache-Control':'no-cache'
+        }
+    }
+
+    const tailors = await axios.get('http://localhost:8181/api/tailor_management/tailor' , options)
     const data = await tailors.data
 
     return data.results
@@ -30,6 +44,7 @@ export default function Page() {
     const modalRef = useRef();
     const [isOpen, setIsOpen] = useState(false)
     const [onClose, setOnClose] = useState(true)
+    const router = useRouter()
 
     const closeModal = async () => {
         
@@ -68,7 +83,13 @@ export default function Page() {
 
     const onSubmit = async (data) => {
 
-        axios.post('http://localhost:8181/api/tailor_management/orders' , data)
+        const options = {
+            headers:{
+                'Authorization':'Bearer '+ localStorage.getItem('auth_token')
+            }
+        }
+
+        axios.post('http://localhost:8181/api/tailor_management/orders' , data , options)
             // .then(res => console.log(res.data.results))
             .then(res => {
                 // console.log('id ',res.data.id)
@@ -80,7 +101,12 @@ export default function Page() {
                 // setValue('res_order_id',res.data.results.id)
             
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                
+                localStorage.removeItem('auth_token')
+                router.push('/')
+            })
 
 
         return toast({
@@ -99,11 +125,25 @@ export default function Page() {
     useEffect(() =>{
         getClientsList()
             .then(res => setClients(res))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+
+                localStorage.removeItem('auth_token')
+
+                router.push('/') 
+            })
 
         getTailorsList()
             .then(res => setTailors(res))
-            .catch(err => console.error(err))
+            .catch(err => {
+
+                console.error(err)
+
+                localStorage.removeItem('auth_token')
+
+                router.push('/')
+
+            })
 
     }, [])
     
@@ -111,13 +151,13 @@ export default function Page() {
     return (
         <>  
             <div className="mx-4 my-6 flex flex-row justify-between">
+
+
                 <div className="bg-black text-white text-base p-2 rounded">
-                    <Link href={'/orders'} >Go back</Link>
+                    <Link href={''} onClick={() => router.back()}>Go back</Link>
                 </div>
 
-                {/* <div>
-
-                </div> */}
+                
             </div>
             <div className="mx-4 my-6 p-2 border">
                 {/* Page add orders */}
@@ -174,7 +214,7 @@ export default function Page() {
 
 
 
-            <>
+            {/* <> */}
                 <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={() => console.log("close")}>
                     <ModalOverlay />
                     <ModalContent>
@@ -225,7 +265,7 @@ export default function Page() {
                         </ModalFooter>
                     </ModalContent>
                 </Modal>
-            </>
+            {/* </> */}
         </>
     )
 };

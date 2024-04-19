@@ -67,16 +67,20 @@ export default function Page() {
     
 
     return (
-        !viewRes ? <Spinner /> : <div className='flex flex-col items-center mt-8'>
-            <div>
+        !viewRes ? <Spinner /> : 
+        <>
+            <div className='m-4'>
                 <Link className="border text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={''} onClick={() => router.back()}>Go back</Link>
-            </div>    
-            <div className='mt-4'>
-                <input className='border border-black outline-none rounded pl-4 py-2 text-black font-bold' type="search" {...register('searchClient')} id="search" placeholder='Search client' />
+            </div> 
+            <div className='flex flex-col items-center mt-8'>
+                <h2 className='text-3xl font-bold underline'>Lists of clients male :</h2>
+                <div className='mt-4'>
+                    <input className='border border-black outline-none rounded pl-4 py-2 text-black font-bold' type="search" {...register('searchClient')} id="search" placeholder='Search client' />
+                </div>
+                <div className='flex justify-center mt-4'>
+                    <TableClient title={'List clients Male'} clients={clients} searchClient={watch('searchClient')} />
+                </div>
             </div>
-            <div className='flex justify-center mt-4'>
-                <TableClient title={'List clients Male'} clients={clients} searchClient={watch('searchClient')} />
-            </div>
-        </div>
+        </>
     )
 }

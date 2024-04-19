@@ -1,17 +1,25 @@
 "use client"
 
 import Link from 'next/link'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 const OrderDetail = ({order}) => {
 
     const param1Ref = useRef(null);
+    const [role, setRole] = useState('')
+
+    useEffect(() => {
+
+        setRole(localStorage.getItem('role_user'))
+
+    },[])
+
   return (
     <div className='border p-4 mb-4'>
         {/* Steps  */}
-        <div className='border p-4'>
+        {/* <div className='border p-4'>
             <div className='text-3xl font-bold'>Steps</div>
-        </div>
+        </div> */}
 
         <div className='flex flex-row justify-between'>
                 
@@ -23,11 +31,11 @@ const OrderDetail = ({order}) => {
             </div>
 
             {order?.status_order == "New" || order?.status_order == "Not Done" ? 
-                <div className='border p-2 m-2 bg-sky-800 text-white font-bold max-w-fit'>
+                (role == 'ROLE_USER' && <div className='border p-2 m-2 bg-sky-800 text-white font-bold max-w-fit'>
                     <Link ref={param1Ref} as={`/payment/making/${order?.id}`} href={`/payment/making/${order?.id}`}>    
                         Make payment 
                     </Link>
-                </div> : ""
+                </div> ): ""
             }
         </div>
 

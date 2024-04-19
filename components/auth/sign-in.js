@@ -39,10 +39,14 @@ export default function SignIn({signIn , setSignIn}) {
     const onSubmit = async (data) => {
         let data_to_save = {...data, roles:["8"]}
 
-        axios.post('http://localhost:8181/api/tailor_management/sign-up', data_to_save , {headers:{
-            "Content-Type":"application/json",
-            "Accept":"application/json"
-        }})
+        const options = {
+            headers:{
+              "Content-Type":"application/json",
+              "Accept":"application/json"
+          }
+        }
+
+        axios.post('http://localhost:8181/api/tailor_management/sign-up', data_to_save , options)
             .then(() => {
             
                 console.log('new user added.')

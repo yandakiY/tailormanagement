@@ -4,12 +4,20 @@ import FormMeasureMen from "@/components/measure/FormMeasureMen"
 import FormMeasureWomen from "@/components/measure/FormMeasureWomen"
 import axios from "axios"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useEffect , useState } from "react"
 
 
 const getClientById = async (id) => {
 
-    const api = await axios.get(`http://localhost:8181/api/tailor_management/client/${id}` , {cache: false})
+    const options ={
+        headers:{
+            'Authorization':'Bearer '+ localStorage.getItem('auth_token'),
+            'Cache-COntrol':'no-cache'
+        }
+    }
+
+    const api = await axios.get(`http://localhost:8181/api/tailor_management/client/${id}` , options)
     const res = await api.data
 
     console.log(res)
@@ -23,12 +31,20 @@ export default function Page({params}) {
     const {clientId} = params
     // console.log(clientId)
     const [client , setClient] = useState()
+    const router = useRouter()
 
 
     useEffect(() => {
         getClientById(clientId)
             .then(res => setClient(res))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+
+                localStorage.removeItem('auth_token')
+
+                router.push('/')
+                    
+            })
 
 
         console.log('client', client)
@@ -36,7 +52,7 @@ export default function Page({params}) {
     },[clientId])
 
     return(
-        <>
+        // <>
             <div>
                 <div className="m-4 bg-black text-white text-xl rounded p-1 w-fit">
                     <Link href={`/clients/${clientId}`}>Go back</Link>
@@ -48,6 +64,6 @@ export default function Page({params}) {
                     {client?.sex.name == 'Male' ? <FormMeasureMen idClient={client?.id} /> : <FormMeasureWomen idClient={client?.id} /> }
                 </div>
             </div>
-        </>
+        // </>
     )
 }

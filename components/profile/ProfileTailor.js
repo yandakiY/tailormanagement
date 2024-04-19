@@ -49,6 +49,8 @@ const getSexList = async () => {
 
 export default function ProfileTailor({tailor}) {
 
+    const [role,setRole] = useState('')
+
     const {register , handleSubmit, formState:{errors}} = useForm({
         defaultValues:{
             name:tailor.name,
@@ -193,6 +195,8 @@ export default function ProfileTailor({tailor}) {
 
     useEffect(() =>{
 
+        setRole(localStorage.getItem('role_user'))
+
         getSexList()
             .then(res => setSex(res))
             .catch(err => {
@@ -224,8 +228,8 @@ export default function ProfileTailor({tailor}) {
 
                     {/* Options */}
                     <div className="flex flex-row justify-center py-2 gap-x-4">
-                        <div onClick={() => openModalUpdate()} className="border cursor-pointer px-4 py-1 rounded text-white bg-cyan-900">Update</div>
-                        <div onClick={() => openModalDelete()} className="border cursor-pointer px-4 py-1 rounded text-white bg-red-900">Delete</div>
+                        {role == 'ROLE_USER' && <div onClick={() => openModalUpdate()} className="border cursor-pointer px-4 py-1 rounded text-white bg-cyan-900">Update</div>}
+                        {role == 'ROLE_ADMIN' && <div onClick={() => openModalDelete()} className="border cursor-pointer px-4 py-1 rounded text-white bg-red-900">Delete</div>}
                     </div>
 
                     {/* Presentation  */}

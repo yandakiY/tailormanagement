@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import {
   Accordion,
   AccordionItem,
@@ -9,7 +10,17 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 
-const SideNavBar = () => {
+export default function SideNavBar() {
+
+    const [role , setRole] = useState('')
+
+
+    useEffect(() => {
+        
+        setRole(localStorage.getItem('role_user'))
+    
+    }, [])
+    
   return (
     <div className='flex flex-col'>
         {/* Logo */}
@@ -21,8 +32,8 @@ const SideNavBar = () => {
             </Link>
         </div>
 
-        {/* Menu Adding */}
-        <div className='mb-8'>
+        {/* Menu Adding - Only for users */}
+        {role == 'ROLE_USER' && <div className='mb-8'>
             <div className='text-xl'>Adding / Updating</div>
             <Accordion allowMultiple>
                 <AccordionItem mb={2}>
@@ -59,11 +70,11 @@ const SideNavBar = () => {
                     </AccordionPanel> */}
                 </AccordionItem>
             </Accordion>
-        </div>
+        </div>}
 
 
-        {/* Menu Making */}
-        <div className='mb-8'>
+        {/* Menu Making - Only for users */}
+        {role == 'ROLE_USER' && <div className='mb-8'>
             <div className='text-xl'>Making</div>
             <Accordion allowMultiple>
                 <AccordionItem mb={2}>
@@ -117,7 +128,7 @@ const SideNavBar = () => {
                     </AccordionPanel> 
                 </AccordionItem> */}
             </Accordion>
-        </div>
+        </div>}
 
         {/* Menu Lists */}
         <div className='mb-8'>
@@ -201,4 +212,3 @@ const SideNavBar = () => {
   )
 }
 
-export default SideNavBar

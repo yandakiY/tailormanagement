@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Spinner } from '@chakra-ui/react'
+import { jwtDecode } from "jwt-decode";
 
 export default function Login({signIn , setSignIn}) {
 
@@ -20,13 +21,18 @@ export default function Login({signIn , setSignIn}) {
 
     const onSubmit = async (data) => {
 
-        axios.post('http://localhost:8181/api/tailor_management/login', data , {headers:{
-            "Content-Type":"application/json",
-            "Accept":"application/json"
-        }}).then(res => {
+        const options = {
+            headers:{
+                "Content-Type":"application/json",
+                "Accept":"application/json"
+            }
+        }
+
+        axios.post('http://localhost:8181/api/tailor_management/login', data , options).then(res => {
             console.log('login succes', res.data)
             setOpenSpinner(true)
             localStorage.setItem('auth_token', res.data.results.token)
+            localStorage.setItem('role_user' , jwtDecode(res.data.results.token).roles)
 
             // redirection to home
             router.push('/home')

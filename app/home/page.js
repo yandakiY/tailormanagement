@@ -325,6 +325,7 @@ export default function Page() {
 
 
         console.log('token', localStorage.getItem('auth_token'))
+        console.log('decode token', localStorage.getItem('role_user'))
         // console.log('token decode', localStorage.getItem('auth_token'))
 
 

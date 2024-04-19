@@ -46,6 +46,7 @@ export default function ProfileClient({client}) {
 
     const toast = useToast()
     const router = useRouter()
+    const [role , setRole] = useState('')
     const [isOpen , setIsOpen] = useState(false)
     const [onClose, setonClose] = useState(false)
 
@@ -136,8 +137,8 @@ export default function ProfileClient({client}) {
     }
 
 
-    const onDeleteTailor = async (id) => {
-        console.log("delete tailor",id)
+    const onDelete = async (id) => {
+        console.log("delete client",id)
 
         // set new data to Tailor
         // setTailor(data)
@@ -145,7 +146,13 @@ export default function ProfileClient({client}) {
         // update via api url 
         await axios.delete(`http://localhost:8181/api/tailor_management/client/${id}`)
             .then(res => console.log("deleting...", res))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+
+                localStorage.removeItem('auth_token')
+
+                router.push('/')
+            })
             
         closeModalDelete()
 
@@ -171,6 +178,8 @@ export default function ProfileClient({client}) {
         // setClient(client)
         // console.log('client eff', client)
 
+        setRole(localStorage.getItem('role_user'))
+
         getSexList()
             .then(res => setSex(res))
             .catch(err => console.error(err))
@@ -189,12 +198,12 @@ export default function ProfileClient({client}) {
                 <div>Total Payment : {client?.total_payment} FCFA</div>
 
                 <div className="flex flex-row justify-between mt-4">
-                    <div onClick={() => openModalUpdate()} className="border cursor-pointer px-4 py-1 rounded text-white bg-cyan-900">
+                    {role == 'ROLE_USER' && <div onClick={() => openModalUpdate()} className="border cursor-pointer px-4 py-1 rounded text-white bg-cyan-900">
                         Edit
-                    </div>
-                    <div onClick={() => openModalDelete()} className="border cursor-pointer px-4 py-1 rounded text-white bg-red-900">
+                    </div>}
+                    {role == 'ROLE_ADMIN' && <div onClick={() => openModalDelete()} className="border cursor-pointer px-4 py-1 rounded text-white bg-red-900">
                         Delete
-                    </div>
+                    </div>}
                 </div>
             </div>
 
@@ -336,7 +345,7 @@ export default function ProfileClient({client}) {
                         <Button onClick={() => closeModalDelete()}>
                             No
                         </Button>
-                        <Button colorScheme='red' onClick={() => onDeleteTailor(client?.id)} ml={3}>
+                        <Button colorScheme='red' onClick={() => onDelete(client?.id)} ml={3}>
                             Yes
                         </Button>
                     </AlertDialogFooter>

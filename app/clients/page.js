@@ -27,6 +27,7 @@ export default function ListClients(){
 
     const router = useRouter()
     const [clients, setClients] = useState([])
+    const [role, setRole] = useState('')
     const [openSpinner, setOpenSpinner] = useState(true)
     const {register , watch} = useForm({
         defaultValues:{
@@ -36,7 +37,9 @@ export default function ListClients(){
 
     // console.log(watch('searchClient'))
 
-    useEffect(() => {        
+    useEffect(() => {     
+
+        setRole(localStorage.getItem('role_user'))   
 
         getClientList()
             .then(res => {
@@ -73,9 +76,9 @@ export default function ListClients(){
                     <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={"/home"}>Go home</Link>
                 </div>
 
-                <div className="">
+                {role == 'ROLE_USER' && <div className="">
                     <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={"/clients/add"}>Add new client</Link>
-                </div>
+                </div>}
             </div>
             <div className='flex flex-col items-center mt-8'>  
                 <div className='mt-4'>

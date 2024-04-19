@@ -107,7 +107,7 @@ export default function ViewOrders({params}){
             {order.length > 0 ? 
                 <div className='flex flex-col'>
                     <div className='text-xl m-2 border-b-2 max-w-max'>
-                        <Link href={'/clients/orders'}>Go back</Link>
+                        <Link href={''} onClick={() => router.back()}>Go back</Link>
                     </div>
                     <div className='border p-2 m-2'>
                         <h1 className='text-2xl font-bold text-center'>{order.length > 1 ? "Orders" : "Order"} of : {client.name} {client.last_name} </h1>

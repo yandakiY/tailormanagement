@@ -58,13 +58,17 @@ export default function Page({params}) {
         console.log("test")
         setSubmitting(true)
 
-        // }
-        await axios.post("http://127.0.0.1:8181/api/tailor_management/payment" ,data, {headers:{
-            "Content-Type":"application/json",
-            "Accept":"application/json"
-        }})
-            .then(res => {
+        const options = {
+            headers:{
+                'Authorization':'Bearer '+ localStorage.getItem('auth_token'),
+                "Content-Type":"application/json",
+                "Accept":"application/json"
+            }
+        }
 
+        // }
+        await axios.post("http://127.0.0.1:8181/api/tailor_management/payment" ,data, options)
+            .then(res => {
                 setResponse(res.data)
                 console.log("Response",res.data)
                 // setSubmitting(true)
@@ -79,6 +83,13 @@ export default function Page({params}) {
                 console.log(JSON.parse(err.response.request.response).errors)
                 setError(JSON.parse(err.response.request.response).errors)
                 setSubmitting(false)
+
+                if(err.response.status == 401){
+                    
+                    localStorage.removeItem('auth_token')
+                    router.push('/')
+
+                }
 
             })
 

@@ -4,13 +4,21 @@ import TableClient from "@/components/table/TableClient";
 import TableClientMeasure from "@/components/table/TableClientMeasure";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 
 const getClientList = async () => {
 
-    const api_url = await axios.get("http://127.0.0.1:8181/api/tailor_management/client", {cache: false});
+    const options = {
+        headers:{
+            'Authorization':'Bearer '+ localStorage.getItem('auth_token'),
+            'Cache-Control':'no-cache'
+        }
+    }
+
+    const api_url = await axios.get("http://127.0.0.1:8181/api/tailor_management/client", options);
     const res = await api_url.data
 
     return res.status == 'Success' ? res.results : []
@@ -18,6 +26,7 @@ const getClientList = async () => {
 
 export default function Page() {
     
+    const router = useRouter()
     const [clients, setClients] = useState([])
     const {register , watch} = useForm({
         defaultValues:{
@@ -30,7 +39,13 @@ export default function Page() {
     useEffect(() => {
         getClientList()
             .then(res => setClients(res))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+
+                localStorage.removeItem('auth_token')
+
+                router.push('/')    
+            })
     },[])
 
 
@@ -41,7 +56,7 @@ export default function Page() {
             </div>
             <div className='mx-4 my-6 flex flex-row justify-between'>
                 <div className="">
-                    <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={"/"}>Go home</Link>
+                    <Link className="border rounded text-white font-bold border-black bg-gray-900 hover:bg-gray-700 hover:transition-all px-4 py-1 mb-4" href={""} onClick={() => router.back()}>Go back</Link>
                 </div>
 
                 <div className="">

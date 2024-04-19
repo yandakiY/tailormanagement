@@ -1,8 +1,11 @@
 import { Button, Input, useToast } from "@chakra-ui/react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export default function FormMeasureMen({idClient}) {
+
+    const router = useRouter()
 
     const {register , watch , setValue , handleSubmit , formState:{errors}} = useForm({
         defaultValues:{
@@ -39,11 +42,28 @@ export default function FormMeasureMen({idClient}) {
     }
 
     const onSubmit = async (data) => {
+
+        const options = {
+            headers:{
+                'Authorization':'Bearer '+ localStorage.getItem('auth_token'),
+                'Cache-Control':'no-cache'
+            }
+        }
+
         console.log('Data measure men',{...data, client_id: idClient})
 
-        axios.post('http://localhost:8181/api/tailor_management/measure_men' , {...data, client_id: idClient})
+        axios.post('http://localhost:8181/api/tailor_management/measure_men' , {...data, client_id: idClient} , options)
             .then(res => console.log('New measure sent'))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+
+                if(err.response.status == 401){
+
+                    localStorage.removeItem('auth_token')
+
+                    router.push('/')
+                }    
+            })
 
         empty_field()
 
@@ -57,8 +77,8 @@ export default function FormMeasureMen({idClient}) {
     }
 
     return (
-        <>
-            <form action="" onSubmit={handleSubmit(onSubmit)} className="flex flex-row justify-center my-6">
+        
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-row justify-center my-6">
                 <div className="flex flex-col items-center ">
 
                     <div className="flex flex-wrap gap-x-5">
@@ -170,6 +190,6 @@ export default function FormMeasureMen({idClient}) {
                 </div>
             </form>
             
-        </>
+        
     )
 }
