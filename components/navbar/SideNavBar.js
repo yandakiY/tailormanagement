@@ -146,15 +146,15 @@ export default function SideNavBar() {
                     <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         <Link href={'/clients'}>List of clients</Link>
                     </AccordionPanel>
-                    <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
+                    {role == 'ROLE_ADMIN' && <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         <Link href={'/clients/male'}>Lists of clients Male</Link>
-                    </AccordionPanel>
-                    <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
+                    </AccordionPanel>}
+                    {role == 'ROLE_ADMIN' && <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         <Link href={'/clients/female'}>Lists of clients Female</Link>
-                    </AccordionPanel>
-                    <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
+                    </AccordionPanel>}
+                    {role == 'ROLE_ADMIN' && <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         <Link href={'/clients/orders'}>Orders for a client</Link>
-                    </AccordionPanel>
+                    </AccordionPanel>}
                 </AccordionItem>
 
                 <AccordionItem mb={2}>
@@ -171,7 +171,7 @@ export default function SideNavBar() {
                     </AccordionPanel>
                 </AccordionItem>
 
-                <AccordionItem>
+                {role == 'ROLE_ADMIN' && <AccordionItem>
                     <h2>
                     <AccordionButton>
                         <Box as="span" flex='1' textAlign='left'>
@@ -186,9 +186,9 @@ export default function SideNavBar() {
                     {/* <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         List of orders pay or not
                     </AccordionPanel> */}
-                </AccordionItem>
+                </AccordionItem>}
 
-                <AccordionItem>
+                {role == 'ROLE_ADMIN' && <AccordionItem>
                     <h2>
                     <AccordionButton>
                         <Box as="span" flex='1' textAlign='left'>
@@ -203,7 +203,7 @@ export default function SideNavBar() {
                     {/* <AccordionPanel className='border my-1 mr-1 shadow-sm hover:shadow-slate-800 hover:cursor-pointer font-bold' pb={1}>
                         List of payments for an order
                     </AccordionPanel> */}
-                </AccordionItem>
+                </AccordionItem>}
             </Accordion>
         </div>
 

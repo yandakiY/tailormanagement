@@ -53,7 +53,7 @@ export default function OrdersClientList() {
             .catch(err => {
                 console.error('Error' , err)
 
-                if(err.response.status == 401){
+                if(err.response.status == 401 || localStorage.getItem('role_user') == 'ROLE_USER'){
 
                     console.log('token expire')
 

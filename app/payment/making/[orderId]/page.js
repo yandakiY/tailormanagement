@@ -84,7 +84,7 @@ export default function Page({params}) {
                 setError(JSON.parse(err.response.request.response).errors)
                 setSubmitting(false)
 
-                if(err.response.status == 401){
+                if(err.response.status == 401 || localStorage.getItem('role_user') == 'ROLE_USER'){
                     
                     localStorage.removeItem('auth_token')
                     router.push('/')

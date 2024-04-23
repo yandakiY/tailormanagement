@@ -28,6 +28,8 @@ const getClientById = async (id) => {
 
 export default function Page({params}) {
 
+    
+
     const {clientId} = params
     // console.log(clientId)
     const [client , setClient] = useState()
@@ -55,7 +57,7 @@ export default function Page({params}) {
         // <>
             <div>
                 <div className="m-4 bg-black text-white text-xl rounded p-1 w-fit">
-                    <Link href={`/clients/${clientId}`}>Go back</Link>
+                    <Link href={`/#`} onClick={() => router.back()}>Go back</Link>
                 </div>
                 <div className="border p-4 mx-4 my-4">
 

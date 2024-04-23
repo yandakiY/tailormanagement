@@ -62,12 +62,16 @@ export default function ViewOrders({params}){
             .catch(err => {
                 
                 console.error(err)
-                setViewSpinner(true)
 
-                localStorage.removeItem('auth_token')
+                if(err.response.status == 401 || localStorage.getItem('role_user') == 'ROLE_USER'){
 
-                router.push('/')
+                    setViewSpinner(true)
 
+                    localStorage.removeItem('auth_token')
+
+                    router.push('/')
+                    
+                }
             })
 
         getOrderByClient(clientId)
@@ -88,19 +92,6 @@ export default function ViewOrders({params}){
 
     },[])
 
-    // const api_url = await fetch(`http://127.0.0.1:8181/api/tailor_management/orders/client/${clientId}`, {cache:'no-cache'})
-    // const data = await api_url.json()
-    // const results = data.status === "Success" ? data.results : []
-
-    // const api_url_client = await fetch(`http://127.0.0.1:8181/api/tailor_management/client/${clientId}`, {cache:'no-cache'})
-    // const data_client = await api_url_client.json()
-    // const client = data_client.status === "Success" ? data_client.results : {}
-
-    // console.log("Results",results)
-    // console.log("Client id", clientId)
-    // }
-    
-    // await getOrderForClient(clientId).then(res => setOrders(res.results)).catch(err => console.error(err))
 
     return (
         viewSpinner ? <Spinner /> :  <div>

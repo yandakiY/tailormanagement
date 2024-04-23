@@ -31,7 +31,11 @@ export default function Login({signIn , setSignIn}) {
         axios.post('http://localhost:8181/api/tailor_management/login', data , options).then(res => {
             console.log('login succes', res.data)
             setOpenSpinner(true)
+
+            // storage of token
             localStorage.setItem('auth_token', res.data.results.token)
+
+            // storage of role
             localStorage.setItem('role_user' , jwtDecode(res.data.results.token).roles)
 
             // redirection to home

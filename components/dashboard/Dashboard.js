@@ -1,11 +1,18 @@
+import { useEffect, useState } from "react";
 import LineCharts from "../charts/LineChart";
 import LineChartsPayment from "../charts/LineChartPayment";
 import PieClientSex from "../charts/PieSex";
 
 export default function Dashboard({getCountAll, getCountAllPay, dataCountClient, dataCountTailor, ordersData, paymentData}) {
 
+    const [role, setRole] = useState('')
+
+    useEffect(() => {
+      setRole(localStorage.getItem('role_user'))
+    }, [])
+    
     return (
-        <>
+        role == 'ROLE_USER' ? 'ROLE_USER' : role == 'ROLE_ADMIN' ? <>
             <main className={`flex flex-col items-center justify-between mx-2 my-3`}>
                 <div className="underline text-3xl pb-4">
                     Welcome to Tailor Management
@@ -56,6 +63,6 @@ export default function Dashboard({getCountAll, getCountAllPay, dataCountClient,
                     </div>
                 </div>
             </main>
-        </>
+        </> : 'ROLE_MODERATOR'
     )
 }

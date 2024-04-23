@@ -291,16 +291,30 @@ export default function Page() {
         })
         .catch(err => {
 
-            setViewSpinner(true)
+            // should check if role == 'user'
+            // role == 'user' => not need of orders lists or orders numbers.
 
-            setErrorAlert(true)
-            console.error(err)
-            
-            console.log('Auth token expire')
-            // delete localStorage
-            localStorage.removeItem('auth_token')
-            // go to auth page
-            router.push('/')
+            // let role = jwtDecode(localStorage.getItem('auth_token')).roles
+
+            if(localStorage.getItem('role_user') == 'ROLE_USER'){
+
+              console.log('ROLE_USER page...')
+              setViewSpinner(true)
+              setErrorAlert(true)
+              setOrders([])
+
+            }else{
+
+              setViewSpinner(true)
+              setErrorAlert(true)
+              console.error(err)
+              
+              console.log('Auth token expire')
+              // delete localStorage
+              localStorage.removeItem('auth_token')
+              // go to auth page
+              router.push('/')
+            }
 
         })
         
@@ -385,6 +399,9 @@ export default function Page() {
         //         </div>
         //     </div>
         // </main>
-        viewSpinner ? <Spinner /> : <Dashboard getCountAll={getCountAll} getCountAllPay={getCountAllPay} ordersData={ordersData} paymentData={paymentData} dataCountClient={dataCountClient} dataCountTailor={dataCountTailor} />
+        viewSpinner ? 
+          <Spinner />
+            :
+          <Dashboard getCountAll={getCountAll} getCountAllPay={getCountAllPay} ordersData={ordersData} paymentData={paymentData} dataCountClient={dataCountClient} dataCountTailor={dataCountTailor} />
     )
 }
