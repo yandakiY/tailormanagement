@@ -19,7 +19,7 @@ const getClientMaleCount = async () => {
     headers:{
       'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
     }
-  })
+  }).finally(() => console.log('user...'))
   const data = await clientMale.data
 
   return { name:'Male' , count:data.results.length }// length of lists of client male
@@ -30,7 +30,7 @@ const getClientFemaleCount = async () => {
     headers:{
       'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
     }
-  })
+  }).finally(() => console.log('user...'))
   const data = await clientFemale.data
 
   return { name:'Female' , count:data.results.length } // length of lists of client male
@@ -41,7 +41,7 @@ const getTailorMaleCount = async () => {
     headers:{
       'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
     }
-  })
+  }).finally(() => console.log('user...'))
   const data = await tailorMale.data
 
   return { name:'Male' , count:data.results.length }// length of lists of client male
@@ -52,7 +52,7 @@ const getTailorFemaleCount = async () => {
     headers:{
       'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
     }
-  })
+  }).finally(() => console.log('user...'))
   const data = await tailorFemale.data
 
   return { name:'Female' , count:data.results.length } // length of lists of client male
@@ -63,7 +63,7 @@ const getOrders = async () => {
     headers:{
       'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
     }
-  })
+  }).finally(() => console.log('user...'))
   const data = await orders.data
 
   return data.results
@@ -74,7 +74,7 @@ const getPayment = async () => {
     headers:{
       'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
     }
-  })
+  }).finally(() => console.log('user...'))
   const data = await payments.data
 
   return data.results
@@ -185,6 +185,8 @@ export default function Page() {
     const router = useRouter()    
     const [countClientMale , setCountClientMale] = useState()
     const [countClientFemale , setCountClientFemale] = useState()
+    const [username , setUsername] = useState('')
+
 
     const [countTailorMale , setCountTailorMale] = useState()
     const [countTailorFemale , setCountTailorFemale] = useState()
@@ -206,6 +208,10 @@ export default function Page() {
 
     useEffect(() => {
 
+      setUsername(localStorage.getItem('username_user'))
+
+      router.prefetch('/profile')
+
         // client
         getClientMaleCount()
         .then(res => {
@@ -213,14 +219,23 @@ export default function Page() {
           setViewSpinner(false)  
         })
         .catch(err => {
-            setViewSpinner(true)
-            console.error(err)
-            
-            console.log('Auth token expire')
-            // delete localStorage
-            localStorage.removeItem('auth_token')
-            // go to auth page
-            router.push('/')
+            // console.error(err)
+
+            if(localStorage.getItem('role_user') == 'ROLE_USER'){
+              setCountTailorFemale([])
+              setViewSpinner(false)
+            }else{
+              
+              setViewSpinner(false)
+
+              setErrorAlert(true)
+              // console.error('Error',err)
+              console.log('Auth token expire')
+              // delete localStorage
+              localStorage.removeItem('auth_token')
+              // go to auth page
+              router.push('/')
+            }
 
         })
 
@@ -230,14 +245,23 @@ export default function Page() {
           setViewSpinner(false)  
         })
         .catch(err => {
-            setViewSpinner(true)
-            console.error(err)
-            
-            console.log('Auth token expire')
-            // delete localStorage
-            localStorage.removeItem('auth_token')
-            // go to auth page
-            router.push('/')
+            // console.error(err)
+
+            if(localStorage.getItem('role_user') == 'ROLE_USER'){
+              setCountTailorFemale([])
+              setViewSpinner(false)
+            }else{
+              
+              setViewSpinner(false)
+
+              setErrorAlert(true)
+              // console.error('Error',err)
+              console.log('Auth token expire')
+              // delete localStorage
+              localStorage.removeItem('auth_token')
+              // go to auth page
+              router.push('/')
+            }
 
         })
 
@@ -249,18 +273,23 @@ export default function Page() {
           setViewSpinner(false)
         })
         .catch(err => {
-          
-            setErrorAlert(true)
-
-            setViewSpinner(true)
-            console.error('Error',err)
             // console.error(err)
-            
-            console.log('Auth token expire')
-            // delete localStorage
-            localStorage.removeItem('auth_token')
-            // go to auth page
-            router.push('/')
+
+            if(localStorage.getItem('role_user') == 'ROLE_USER'){
+              setCountTailorFemale([])
+              setViewSpinner(false)
+            }else{
+              
+              setViewSpinner(false)
+
+              setErrorAlert(true)
+              // console.error('Error',err)
+              console.log('Auth token expire')
+              // delete localStorage
+              localStorage.removeItem('auth_token')
+              // go to auth page
+              router.push('/')
+            }
 
         })
 
@@ -271,15 +300,22 @@ export default function Page() {
         })
         .catch(err => {
             // console.error(err)
-            setViewSpinner(false)
 
-            setErrorAlert(true)
-            console.error('Error',err)
-            console.log('Auth token expire')
-            // delete localStorage
-            localStorage.removeItem('auth_token')
-            // go to auth page
-            router.push('/')
+            if(localStorage.getItem('role_user') == 'ROLE_USER'){
+              setCountTailorFemale([])
+              setViewSpinner(false)
+            }else{
+              
+              setViewSpinner(false)
+
+              setErrorAlert(true)
+              // console.error('Error',err)
+              console.log('Auth token expire')
+              // delete localStorage
+              localStorage.removeItem('auth_token')
+              // go to auth page
+              router.push('/')
+            }
 
         })
 
@@ -307,7 +343,7 @@ export default function Page() {
 
               setViewSpinner(true)
               setErrorAlert(true)
-              console.error(err)
+              // console.error(err)
               
               console.log('Auth token expire')
               // delete localStorage
@@ -327,7 +363,7 @@ export default function Page() {
         .catch(err => {
             setViewSpinner(true)
             setErrorAlert(true)
-            console.error(err)
+            // console.error(err)
             
             console.log('Auth token expire')
             // delete localStorage
@@ -402,6 +438,6 @@ export default function Page() {
         viewSpinner ? 
           <Spinner />
             :
-          <Dashboard getCountAll={getCountAll} getCountAllPay={getCountAllPay} ordersData={ordersData} paymentData={paymentData} dataCountClient={dataCountClient} dataCountTailor={dataCountTailor} />
+          <Dashboard username={username} getCountAll={getCountAll} getCountAllPay={getCountAllPay} ordersData={ordersData} paymentData={paymentData} dataCountClient={dataCountClient} dataCountTailor={dataCountTailor} />
     )
 }

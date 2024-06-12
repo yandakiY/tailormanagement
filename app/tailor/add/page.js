@@ -132,15 +132,15 @@ export default function Page() {
                 </div>
 
                 <form className="" onSubmit={handleSubmit(onSubmit)}>
-                    <div className="flex flex-col items-center  p-2 rounded">
-                        <h1 className="text-3xl mb-16">
+                    <div className="flex flex-col items-start border p-2 rounded w-full">
+                        <h1 className="text-3xl mb-4">
                             Add new tailor
                         </h1>
 
                         {/* Form  */}
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-start w-96">
                             {/* Name - last name  */}
-                            <div className="flex flex-col lg:flex-row gap-x-8">
+                            <div className="flex flex-col lg:flex-col gap-x-8 w-full">
                                 <div className="mb-4">
                                     <div>Name : </div>
                                     <div>
@@ -177,7 +177,7 @@ export default function Page() {
                             </div>
 
                             {/* Contacts - Email */}
-                            <div className="flex flex-col lg:flex-row gap-x-8">
+                            <div className="flex flex-col lg:flex-col gap-x-8 w-full">
                                 <div className="mb-4">
                                     <div>Contacts (Tel) : </div>
                                     <div>
@@ -212,7 +212,7 @@ export default function Page() {
                             </div>
 
                             {/* Dob - Year experience */}
-                            <div className="flex flex-col lg:flex-row gap-x-8">
+                            <div className="flex flex-col lg:flex-col gap-x-8 w-full">
                                 <div className="mb-4">
                                     <div>Date of birth : </div>
                                     <div>
@@ -246,7 +246,7 @@ export default function Page() {
                                 </div>
                             </div>
 
-                            <div className="mb-4">
+                            <div className="flex flex-col lg:flex-col gap-x-8 w-full">
                                 <div>Sex : </div>
                                 <div>
                                     <Select size={'lg'} {...register("sex_id", { required: true })}>
@@ -259,8 +259,8 @@ export default function Page() {
                                     {errors?.sex_id?.message}
                                 </div>
                             </div>
-                            <div>
-                                <input type="submit" value={'Add'} className="px-8 py-2 bg-black hover:bg-slate-900 text-white font-bold text-lg rounded"/>
+                            <div className="w-full mt-2">
+                                <input type="submit" value={'Add'} className="w-full px-8 py-2 bg-black hover:bg-slate-900 text-white font-bold text-lg rounded"/>
                             </div>
                         </div>
                     </div>

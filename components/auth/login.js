@@ -38,6 +38,9 @@ export default function Login({signIn , setSignIn}) {
             // storage of role
             localStorage.setItem('role_user' , jwtDecode(res.data.results.token).roles)
 
+            // storage of username
+            localStorage.setItem('username_user' , data.username)
+
             // redirection to home
             router.push('/home')
 

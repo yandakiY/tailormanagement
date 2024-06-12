@@ -44,7 +44,11 @@ export default function OrdersList(){
       .catch(err =>{
         console.error(err)
 
-        if(err.response.status == 401){
+        // if(localStorage.getItem('role_user') == 'ROLE_USER'){
+
+        // }
+        // else 
+        if(err.response.status == 401 && localStorage.getItem('role_user') == 'ROLE_ADMIN'){
 
           localStorage.removeItem('auth_token')
 

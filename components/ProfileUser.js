@@ -42,7 +42,7 @@ const getSexList = async () => {
 }
 
 
-export default function ProfileClient({client}) {
+export default function Profile({user}) {
 
     const toast = useToast()
     const router = useRouter()
@@ -51,6 +51,7 @@ export default function ProfileClient({client}) {
     const [isOpen , setIsOpen] = useState(false)
     const [onClose, setonClose] = useState(false)
 
+    const formatDate = (text) => new Date(text).toLocaleDateString("fr-FR");
     
 
     const [isOpenModal , setIsOpenModal] = useState(false)
@@ -58,21 +59,21 @@ export default function ProfileClient({client}) {
 
     const [sex , setSex] = useState([])
     const [clients, setClient] = useState(null)
-    console.log('client', client)
+    console.log('users', user)
 
     // configure date , should be not less than 18 years old
     const date_var = new Date()
     const eighteenYearsAgo = new Date(date_var.getFullYear() - 18, date_var.getMonth(), date_var.getDate());
     const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
 
-    const {register  , watch , handleSubmit, formState:{errors}} = useForm({
+    const {register , watch , handleSubmit, formState:{errors}} = useForm({
         values:{
-            name:client?.name,
-            last_name:client?.last_name,
-            email:client?.email,
-            sex_id:client?.sex?.id,
-            contacts:client?.contacts,
-            date_birth:client?.date_birth
+            name:user?.name,
+            last_name:user?.last_name,
+            email:user?.email,
+            sex_id:user?.sex?.id,
+            contacts:user?.contacts,
+            date_birth:user?.date_birth
         },
     })
     
@@ -109,33 +110,40 @@ export default function ProfileClient({client}) {
             }
         }
 
-        console.log("new data",data)
+        console.log("new user data",data)
 
         // set new data to Tailor
-        setClient({...data , total_payment:client.total_payment})
+        // setClient({...data , total_payment:client.total_payment})
 
         // update via api url 
-        await axios.put(`http://localhost:8181/api/tailor_management/client/${client.id}`, data , options)
+        await axios.patch(`http://localhost:8181/api/tailor_management/users/${user.id}`, data , options)
             .then(res => {
                 console.log("updating made..", res.data.results)
-                
+                    
                 return toast({
-                    title: 'Client updated.',
+                    title: 'User updated.',
                     description: "",
                     status: 'success',
                     duration: 3000,
                     isClosable: true,
                 })
+
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+
+                // remove token 
+                localStorage.removeItem('auth_token')
+
+                // push to auth page
+                router.push('/')
+            })
+            // .catch(err => console.error(err))
             
         closeModal()
 
         // refresh page
         window.location.reload()
-
-        
-
         
     }
 
@@ -146,9 +154,27 @@ export default function ProfileClient({client}) {
         // set new data to Tailor
         // setTailor(data)
 
+        let options = {
+            headers:{
+                'Cache-Control':'no-cache' ,
+                'Authorization':'Bearer '+localStorage.getItem('auth_token') 
+            }
+        }
+
         // update via api url 
-        await axios.delete(`http://localhost:8181/api/tailor_management/client/${id}`)
-            .then(res => console.log("deleting...", res))
+        await axios.delete(`http://localhost:8181/api/tailor_management/users/${id}` , options)
+            .then(res => {
+                console.log("deleting...", res)
+                        
+                return toast({
+                    title: 'User deleted.',
+                    description: "",
+                    status: 'error',
+                    duration: 2000,
+                    isClosable: true,
+                })
+
+            })
             .catch(err => {
                 console.error(err)
 
@@ -159,16 +185,7 @@ export default function ProfileClient({client}) {
             
         closeModalDelete()
 
-        router.push('/clients')
-
-
-        return toast({
-            title: 'Client deleted.',
-            description: "",
-            status: 'error',
-            duration: 2000,
-            isClosable: true,
-        })
+        router.push('/users')
 
     }
 
@@ -185,7 +202,15 @@ export default function ProfileClient({client}) {
 
         getSexList()
             .then(res => setSex(res))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error('error on get client' , err)
+                
+                console.log('Auth token expire')
+                // delete localStorage
+                localStorage.removeItem('auth_token')
+                // go to auth page
+                router.push('/')
+            })
 
         console.log("list sex",sex)
     },[])
@@ -193,15 +218,18 @@ export default function ProfileClient({client}) {
     return (
         <>
             <div className="border p-4 flex flex-col text-base">
-                <div>Name : {client?.name}</div>
-                <div>Last name : {client?.last_name}</div>
-                <div>Contacts : {client?.contacts} </div>
-                <div>Email : {client?.email} </div>
-                <div>Sex : {client?.sex ? client?.sex.name : sex.map(sex => sex.id === client?.sex_id && sex.name)}</div>
-                <div>Total Payment : {client?.total_payment} FCFA</div>
+                <div>Name : {user?.name}</div>
+                <div>Last name : {user?.last_name}</div>
+                <div>Username : {user?.username}</div>
+                <div>Email : {user?.email} </div>
+                <div>Contacts : {user?.contacts} </div>
+                <div>Role : {user?.roles.map(role => role.name)}</div>
+                <div>Date of birth : {formatDate(user?.date_birth)}</div>
+                <div>Sex : {user?.sex ? user?.sex.name : sex.map(sex => sex.id === user?.sex_id && sex.name)}</div>
+                {/* <div>Total Payment : {user?.total_payment} FCFA</div> */}
 
                 <div className="flex flex-row justify-between mt-4">
-                    {role == 'ROLE_USER' && <div onClick={() => openModalUpdate()} className="border cursor-pointer px-4 py-1 rounded text-white bg-cyan-900">
+                    {role == 'ROLE_ADMIN' && <div onClick={() => openModalUpdate()} className="border cursor-pointer px-4 py-1 rounded text-white bg-cyan-900">
                         Edit
                     </div>}
                     {role == 'ROLE_ADMIN' && <div onClick={() => openModalDelete()} className="border cursor-pointer px-4 py-1 rounded text-white bg-red-900">
@@ -219,7 +247,7 @@ export default function ProfileClient({client}) {
             >
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Update Tailor</ModalHeader>
+                    <ModalHeader>Update user</ModalHeader>
                     <ModalBody pb={2}>
                         <form action="" onSubmit={handleSubmit(onSubmitUpdate)}>
                             <div className='flex flex-col'>
@@ -342,13 +370,13 @@ export default function ProfileClient({client}) {
                     <AlertDialogHeader>Delete Tailor</AlertDialogHeader>
                     {/* <AlertDialogCloseButton /> */}
                     <AlertDialogBody>
-                        Are you sure you want delete this client ?
+                        Are you sure you want delete this user ?
                     </AlertDialogBody>
                     <AlertDialogFooter>
                         <Button onClick={() => closeModalDelete()}>
                             No
                         </Button>
-                        <Button colorScheme='red' onClick={() => onDelete(client?.id)} ml={3}>
+                        <Button colorScheme='red' onClick={() => onDelete(user?.id)} ml={3}>
                             Yes
                         </Button>
                     </AlertDialogFooter>

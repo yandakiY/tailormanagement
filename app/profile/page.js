@@ -1,7 +1,22 @@
 "use client"
 
-import { useForm } from 'react-hook-form'
-import { Input, useToast } from '@chakra-ui/react'
+import axios from "axios"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Select,
+  Input,
+  useToast,
+} from '@chakra-ui/react'
 import {
   AlertDialog,
   AlertDialogBody,
@@ -11,207 +26,246 @@ import {
   AlertDialogOverlay,
   AlertDialogCloseButton,
 } from '@chakra-ui/react'
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  Button,
-  Select,
-} from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from "react";
+import ChangePassword from "@/components/ChangePassword";
 
+const getUserByUsername = async (username) => {
 
-const getSexList = async () => {
-    
-    let options = {
+    const clientMale = await axios.get(`http://localhost:8181/api/tailor_management/users/${username}` , {
         headers:{
-            'Cache-Control':'no-cache' ,
-            'Authorization':'Bearer '+localStorage.getItem('auth_token') 
+            'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+        }
+    }).finally(() => console.log('user...'))
+
+    const data = await clientMale.data
+    return data.results
+
+    // console.log('check username ',username)
+}
+
+const getSexApi = async () =>{
+
+    const options = {
+        headers:{
+            'Cache-Control':'no-cache',
+            'Authorization':'Bearer ' + localStorage.getItem('auth_token')
         }
     }
-    const api_url_sex = await axios.get("http://127.0.0.1:8181/api/tailor_management/sex", options);
+
+    const api_url_sex = await axios.get("http://127.0.0.1:8181/api/tailor_management/sex/lists", options);
     const res_sex = await api_url_sex.data
 
     // console.log("sex",res_sex.results)
-    return res_sex.status === "Success" ? res_sex.results : []
+    return res_sex.results
 }
 
-
-export default function ProfileClient({client}) {
+export default function Page() {
 
     const toast = useToast()
     const router = useRouter()
-    const [role , setRole] = useState('')
+    const [user , setUser] = useState(null)
+    const [username , setUsername] = useState('')
 
-    const [isOpen , setIsOpen] = useState(false)
-    const [onClose, setonClose] = useState(false)
+    // Modal 
+    const [isOpen, setIsOpen] = useState(false)
+    const [onClose, setOnClose] = useState(false)
 
-    
+    // Modal change password
+    const [isOpenModalPassword, setIsOpenModalPassword] = useState(false)
+    const [onCloseModalPassword, setOnCloseModalPassword] = useState(false)
 
-    const [isOpenModal , setIsOpenModal] = useState(false)
-    const [onCloseModal, setonCloseModal] = useState(false)
+    // Alert
+    const [isOpenAlert , setIsOpenAlert] = useState(false)
+    const [onCloseAlert, setonCloseAlert] = useState(false)
 
-    const [sex , setSex] = useState([])
-    const [clients, setClient] = useState(null)
-    console.log('client', client)
+    //
+    const [okUpdate , setOkUpdate] = useState(false)
 
-    // configure date , should be not less than 18 years old
+    const [sex, setSex] = useState([])
+
+
+    // max date
     const date_var = new Date()
     const eighteenYearsAgo = new Date(date_var.getFullYear() - 18, date_var.getMonth(), date_var.getDate());
     const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
 
-    const {register  , watch , handleSubmit, formState:{errors}} = useForm({
+
+    const {register , setValue , watch , handleSubmit, formState:{errors}} = useForm({
         values:{
-            name:client?.name,
-            last_name:client?.last_name,
-            email:client?.email,
-            sex_id:client?.sex?.id,
-            contacts:client?.contacts,
-            date_birth:client?.date_birth
+            id:'',
+            name:'',
+            last_name:'',
+            email:'',
+            sex_id:'1',
+            contacts:'',
+            date_birth:''
         },
     })
-    
-    const openModalUpdate = () =>{
-        console.log('Open modal..')
+
+    // const {register , setValue , watch , handleSubmit, formState:{errors}} = useForm({
+    //     values:{
+    //         test:''
+    //     },
+    // })
+
+    const openModal = () => {
         setIsOpen(true)
-        setonClose(false)
     }
 
-    const openModalDelete = () =>{
-        console.log('Open modal delete..')
-        setIsOpenModal(true)
-        setonCloseModal(false)
+    const openModalChangePassword = () => {
+        setIsOpenModalPassword(true)
     }
 
-    const closeModalDelete = () =>{
-        console.log('Close modal delete..')
-        setIsOpenModal(false)
-        setonCloseModal(true)
+    const closeModalChangePassword = () => {
+        // setOnCloseModalPassword(true)
+        setIsOpenModalPassword(false)
+
     }
 
     const closeModal = () => {
-        console.log('Close modal...')
+        // setOnClose(true)
         setIsOpen(false)
-        setonClose(true)
     }
 
-    const onSubmitUpdate = async (data) => {
+    // close warning alert
+    const closeAlertupdate = () => {
+        setonCloseAlert(true)
+        setIsOpenAlert(false)
+    }
 
-        let options = {
+    // open warning alert
+    const openAlertupdate = async () => {
+        setIsOpenAlert(true)
+        setonCloseAlert(false)
+    }
+
+    const onDeconnect = async () => {
+        console.log('Deconnect...')
+
+        // remove token
+        localStorage.removeItem('auth_token')
+
+        // push to auth page
+        router.push('/')
+    }
+
+    const formatDate = (text) => new Date(text).toLocaleDateString("fr-FR");
+
+    // const updateProcess = () => {
+        
+    // }
+
+    const onSubmitUpdate = async (data) =>{
+
+        // close modal update
+        closeModal()
+
+        // update new data
+        await axios.patch(`http://localhost:8181/api/tailor_management/users/${watch('id')}` , data , {
             headers:{
-                'Cache-Control':'no-cache' ,
-                'Authorization':'Bearer '+localStorage.getItem('auth_token') 
+                'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
             }
-        }
-
-        console.log("new data",data)
-
-        // set new data to Tailor
-        setClient({...data , total_payment:client.total_payment})
-
-        // update via api url 
-        await axios.put(`http://localhost:8181/api/tailor_management/client/${client.id}`, data , options)
-            .then(res => {
-                console.log("updating made..", res.data.results)
-                
+        }).then(res => {
                 return toast({
-                    title: 'Client updated.',
+                    title: 'User updated.',
                     description: "",
                     status: 'success',
                     duration: 3000,
                     isClosable: true,
                 })
-            })
-            .catch(err => console.error(err))
-            
-        closeModal()
+        })
 
-        // refresh page
+        // alert component - you should be deconnect
+        // openAlertupdate()
+
+
+        //reload the current page
         window.location.reload()
 
-        
+        // console.log(data)
+    
 
-        
     }
 
+    useEffect(() => {
 
-    const onDelete = async (id) => {
-        console.log("delete client",id)
+        console.log('username from profile' , localStorage.getItem('username_user'))
 
-        // set new data to Tailor
-        // setTailor(data)
+        // setUsername(localStorage.getItem('username_user'))
 
-        // update via api url 
-        await axios.delete(`http://localhost:8181/api/tailor_management/client/${id}`)
-            .then(res => console.log("deleting...", res))
+        getUserByUsername(localStorage.getItem('username_user'))
+            .then(data => {
+                setUser(data)
+
+                // set values to input
+                setValue('name' , data.name)
+                setValue('last_name' , data.last_name)
+                setValue('email' , data.email)
+                setValue('contacts' , data.contacts)
+                setValue('date_birth' , data.date_birth)
+                setValue('sex_id' , data.sex.id)
+                setValue('id' , data.id)
+
+                console.log('Data user' , data)    
+            })
             .catch(err => {
                 console.error(err)
 
+                // remove token
                 localStorage.removeItem('auth_token')
 
+                // push to auth page
                 router.push('/')
             })
-            
-        closeModalDelete()
+      
+        getSexApi()
+            .then(data => setSex(data))
+            .catch(err => {
+                console.error(err)
 
-        router.push('/clients')
+                // remove token
+                localStorage.removeItem('auth_token')
 
-
-        return toast({
-            title: 'Client deleted.',
-            description: "",
-            status: 'error',
-            duration: 2000,
-            isClosable: true,
-        })
-
-    }
-
-
-    useEffect(() =>{
-
-        // if(client == undefined){
-        //     router.push('/')
-        // }
-        // setClient(client)
-        // console.log('client eff', client)
-
-        setRole(localStorage.getItem('role_user'))
-
-        getSexList()
-            .then(res => setSex(res))
-            .catch(err => console.error(err))
-
-        console.log("list sex",sex)
-    },[])
+                // push to auth page
+                router.push('/')
+            })
+    
+    }, [])
+    
 
     return (
         <>
-            <div className="border p-4 flex flex-col text-base">
-                <div>Name : {client?.name}</div>
-                <div>Last name : {client?.last_name}</div>
-                <div>Contacts : {client?.contacts} </div>
-                <div>Email : {client?.email} </div>
-                <div>Sex : {client?.sex ? client?.sex.name : sex.map(sex => sex.id === client?.sex_id && sex.name)}</div>
-                <div>Total Payment : {client?.total_payment} FCFA</div>
 
-                <div className="flex flex-row justify-between mt-4">
-                    {role == 'ROLE_USER' && <div onClick={() => openModalUpdate()} className="border cursor-pointer px-4 py-1 rounded text-white bg-cyan-900">
-                        Edit
-                    </div>}
-                    {role == 'ROLE_ADMIN' && <div onClick={() => openModalDelete()} className="border cursor-pointer px-4 py-1 rounded text-white bg-red-900">
-                        Delete
-                    </div>}
+            <div className="my-8">
+                <div>
+                    <Link href={''} onClick={() => router.back()} className="bg-black px-2 py-1 text-xl text-white rounded">Go back</Link>
+                </div>
+                <div className="flex flex-col mt-4">
+                    <div className="text-3xl">Profile : {user?.username} </div>
+                    <div className="p-2 text-2xl grid grid-cols-2 gap-x-2 w-full font-bold">
+                        <div className="border p-2 my-2 flex flex-col items-center">
+                            <div>Nom :</div> {user?.name}
+                        </div>
+                        <div className="border p-2 my-2 flex flex-col items-center">
+                            <div>Prenom :</div> {user?.last_name}
+                        </div>
+                        <div className="border p-2 my-2 flex flex-col items-center">
+                            <div>Date of birth :</div> {formatDate(user?.date_birth)}
+                        </div>
+                        <div className="border p-2 my-2 flex flex-col items-center">
+                            <div>Role :</div> {user?.roles.map(role => '|' + role.name)}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-row gap-x-2 justify-center">
+                    <button onClick={() => openModal()} className="p-2 bg-slate-600 text-white rounded">Update profile</button>
+                    <button onClick={() => openModalChangePassword()} className="p-2 bg-blue-900 text-white rounded">Change the password</button>
                 </div>
             </div>
 
 
-
+            
             <Modal
                 isOpen={isOpen}
                 onClose={onClose}
@@ -219,9 +273,12 @@ export default function ProfileClient({client}) {
             >
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Update Tailor</ModalHeader>
+                    <ModalHeader>Update Profile User : {user?.username} </ModalHeader>
                     <ModalBody pb={2}>
-                        <form action="" onSubmit={handleSubmit(onSubmitUpdate)}>
+                        <form 
+                            method="post"
+                            onSubmit={handleSubmit(onSubmitUpdate)}
+                        >
                             <div className='flex flex-col'>
                                 <div className='flex flex-col min-w-72 mb-1'>
                                     <div className="label flex flex-col">
@@ -303,7 +360,7 @@ export default function ProfileClient({client}) {
                                         Sex :
                                     </div>
                                     <div>
-                                        <Select size={'lg'} {...register("sex_id", { required: true })}>
+                                        <Select size={'lg'}  {...register("sex_id", { required: true })}>
                                             {sex.map(sex => 
                                                 <option key={sex.id} value={`${sex.id}`}>{sex.name}</option>
                                             )}
@@ -313,48 +370,53 @@ export default function ProfileClient({client}) {
                             </div>
 
                             <ModalFooter>
-                                <Button 
+                                <Button
                                     type='submit' 
                                     colorScheme='blue' 
                                     mr={3}
-                                    
                                 >
                                     Update
                                 </Button>
-                                <Button onClick={closeModal}>Cancel</Button>
+                                <Button onClick={() => closeModal()}>Cancel</Button>
                             </ModalFooter>
                         </form>
                     </ModalBody>
                 </ModalContent>
             </Modal>
 
-
+            
+            <ChangePassword username={user?.username} user_id={user?.id} isOpen={isOpenModalPassword} onClose={onCloseModalPassword} closeModal={() => closeModalChangePassword()} />
+            
 
             <AlertDialog
                 motionPreset='slideInBottom'
-                onClose={onCloseModal}
-                isOpen={isOpenModal}
+                onClose={() => closeAlertupdate()}
+                isOpen={isOpenAlert}
+                closeOnOverlayClick={false}
                 isCentered
             >
                 <AlertDialogOverlay />
 
                 <AlertDialogContent>
-                    <AlertDialogHeader>Delete Tailor</AlertDialogHeader>
+                    <AlertDialogHeader>Warning - Updating</AlertDialogHeader>
                     {/* <AlertDialogCloseButton /> */}
                     <AlertDialogBody>
-                        Are you sure you want delete this client ?
+                        <p className="text-2xl">The updating of profile requires the log out of your account.</p>
+                        {/* <br /> */}
+                        {/* <p className="text-xl mt-4">Do you want this ?</p> */}
                     </AlertDialogBody>
                     <AlertDialogFooter>
-                        <Button onClick={() => closeModalDelete()}>
+                        {/* <Button dis onClick={() => closeAlertupdate()}>
                             No
-                        </Button>
-                        <Button colorScheme='red' onClick={() => onDelete(client?.id)} ml={3}>
-                            Yes
+                        </Button> */}
+                        <Button colorScheme='red' onClick={() => onDeconnect()} ml={3}>
+                            Log out
                         </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
 
         </>
-    );
+    )
 }
+
